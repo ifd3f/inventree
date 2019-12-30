@@ -1,15 +1,15 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
-CONTAINER_TYPE_CHOICES = [
-    ('BX', 'box'),
-    ('SL', 'shelf'),
-    ('DR', 'drawer'),
-    ('RM', 'room'),
-    ('SR', 'surface'),
-    ('WL', 'wall'),
-    ('OT', 'other')
-]
+CONTAINER_TYPE_CHOICES = {
+    'BX': 'box',
+    'SL': 'shelf',
+    'DR': 'drawer',
+    'RM': 'room',
+    'SR': 'surface',
+    'WL': 'wall',
+    'OT': 'other'
+}
 
 
 class Container(models.Model):
@@ -21,11 +21,19 @@ class Container(models.Model):
     location = models.TextField('location', blank=True)
     container_type = models.CharField(
         max_length=2,
-        choices=CONTAINER_TYPE_CHOICES,
+        choices=CONTAINER_TYPE_CHOICES.items(),
         blank=False,
         default='BX'
     )
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
+
+    @property
+    def link(self):
+        return f'/container/{self.id}'
+
+    @property
+    def type_verbose(self):
+        return CONTAINER_TYPE_CHOICES[self.container_type]
 
     def __str__(self):
         if self.location != '':
@@ -59,8 +67,12 @@ class Item(models.Model):
     description = models.TextField('description', blank=True)
     quantity = models.IntegerField('quantity', default=0)
     alert_quantity = models.IntegerField('alert quantity', default=0)
-    container = models.ForeignKey(Container, on_delete=models.SET_NULL, blank=True, null=True)
+    parent = models.ForeignKey(Container, verbose_name='container', on_delete=models.SET_NULL, blank=True, null=True)
     tags = models.ManyToManyField(ItemTag)
+
+    @property
+    def link(self):
+        return f'/item/{self.id}'
 
     def __str__(self):
         return f'{self.name} × {self.quantity}'

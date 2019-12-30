@@ -43,10 +43,13 @@
     <!-- Right-aligned -->
     <ul class="navbar-nav ml-md-auto d-md-flex">
         <li class="nav-item">
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <form class="form-inline my-2 my-lg-0" action="search" method="get">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search_keyword" value="{{ request.GET.search_keyword }}">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-primary" href="search.html" role="button">Advanced...</a>
         </li>
 
         {% if user.is_authenticated %}

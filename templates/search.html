@@ -1,0 +1,40 @@
+{% extends 'skeleton_main.html' %}
+
+{% block content %}
+    {% if results %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Contained in</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in results %}
+                <tr>
+                    <td><a href="{{ object.link }}">{{ object.name }}</a></td>
+                    <td>{{ object.type }}</td>
+                    <td>
+                        {% if object.description %}
+                            {{ object.description }}
+                        {% else %}
+                            <span class="text-muted">No description provided.</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if object.parent %}
+                            <a href="{{ object.parent.link }}">{{ object.parent.name }}</a>
+                        {% else %}
+                            <span class="text-muted">No container.</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No results found. Try searching for a different query?</p>
+    {% endif %}
+{% endblock %}
