@@ -55,6 +55,14 @@ class Container(models.Model):
 class ItemTag(models.Model):
     name = models.CharField(verbose_name='name', max_length=30, primary_key=True)
 
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        return super().save(*args, **kwargs)
+
+    @property
+    def link(self):
+        return f'/tag/{self.name}'
+
     def __str__(self):
         return self.name
 

@@ -14,7 +14,7 @@ class SearchForm(forms.Form):
 
     def get_results(self):
         items_query = (
-            Item.objects.filter(Q(name__contains=self.cleaned_data['search_keyword']))
+            Item.objects.filter(Q(name__contains=self.cleaned_data['search_keyword']) | Q(tags__name__contains=self.cleaned_data['search_keyword']))
         )
         item_results = [
             SearchResult(str(i), i.link, 'Item', i.description, i.parent)
