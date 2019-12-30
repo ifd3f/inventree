@@ -1,0 +1,28 @@
+{% extends "skeleton_main.html" %}
+
+{% block content %}
+    <p>Tracking {{ items.total_count|default:"0" }} items in {{ containers.count|default:"0" }} containers</p>
+    <h3>Restock Alert</h3>
+    {% if restock_items %}
+        <table>
+            <thead>
+            <th>
+            <td>Name</td>
+            <td>Quantity</td>
+            </th>
+            </thead>
+
+            <tbody>
+            {% for item in restock_items %}
+                <tr>
+                    <td>item.name</td>
+                    <td>item.quantity</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No items to restock. Have a nice day!</p>
+    {% endif %}
+
+{% endblock %}

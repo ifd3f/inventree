@@ -1,7 +1,5 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from enum import Enum
-
 
 CONTAINER_TYPE_CHOICES = [
     ('BX', 'box'),
@@ -15,7 +13,10 @@ CONTAINER_TYPE_CHOICES = [
 
 
 class Container(models.Model):
-    name = models.CharField(verbose_name='name', max_length=100)
+    name = models.CharField(
+        verbose_name='name',
+        max_length=100
+    )
     description = models.TextField('description', blank=True)
     location = models.TextField('location', blank=True)
     container_type = models.CharField(
@@ -57,6 +58,7 @@ class Item(models.Model):
     name = models.CharField(verbose_name='name', max_length=100)
     description = models.TextField('description', blank=True)
     quantity = models.IntegerField('quantity', default=0)
+    alert_quantity = models.IntegerField('alert quantity', default=0)
     container = models.ForeignKey(Container, on_delete=models.SET_NULL, blank=True, null=True)
     tags = models.ManyToManyField(ItemTag)
 
