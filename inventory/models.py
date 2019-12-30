@@ -68,6 +68,8 @@ class Item(models.Model):
     quantity = models.IntegerField('quantity', default=0)
     alert_quantity = models.IntegerField('alert quantity', default=0)
     parent = models.ForeignKey(Container, verbose_name='container', on_delete=models.SET_NULL, blank=True, null=True)
+    source = models.CharField(verbose_name='source', max_length=200, blank=True, default='')
+    source_url = models.URLField(verbose_name='source URL', blank=True, null=True)
     tags = models.ManyToManyField(ItemTag)
 
     @property
