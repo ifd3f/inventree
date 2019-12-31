@@ -1,0 +1,41 @@
+{% extends 'skeleton_main.html' %}
+
+{% block content %}
+    <h1>Items with tag "{{ tag.name }}"</h1>
+    {% if tag.item_set.exists %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Container</th>
+                <th>Description</th>
+                <th>Quantity</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in tag.item_set.all %}
+                <tr>
+                    <td><a href="{{ item.link }}">{{ item.name }}</a></td>
+                    <td>
+                        {% if item.parent %}
+                            <a href="{{ item.parent.link }}">{{ item.parent.name }}</a>
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.description %}
+                            {{ item.description|truncatechars:50 }}
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ item.quantity }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p><span class="text-muted">This container is empty.</span></p>
+    {% endif %}
+{% endblock %}
