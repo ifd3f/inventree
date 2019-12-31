@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.template import loader
 
 from inventory.forms import SearchForm
-from inventory.models import Item, Container
+from inventory.models import Item, Container, ItemTag
 
 
 def search(request):
@@ -35,10 +35,15 @@ def add(request):
 
 def item_detail(request, item_id):
     context = {'item': Item.objects.get(id=item_id)}
-    return render(request, 'item.html', context)
+    return render(request, 'item_detail.html', context)
 
 
 def container_detail(request, container_id):
     context = {'container': Container.objects.get(id=container_id)}
-    return render(request, 'container.html', context)
+    return render(request, 'container_detail.html', context)
 
+
+def tag_detail(request, tag_name):
+    tag = ItemTag.objects.get(pk=tag_name)
+    context = {'tag': tag}
+    return render(request, 'tag_detail.html', context)

@@ -37,20 +37,20 @@
     <h2>Contents</h2>
     {% if container.item_set.exists %}
         <table class="table">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Quantity</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for item in container.item_set.all %}
+            <thead>
             <tr>
-            <td>{{ item.name }}</td>
-            <td>{{ item.quantity }}</td>
+                <th>Name</th>
+                <th>Quantity</th>
             </tr>
-        {% endfor %}
-        </tbody>
+            </thead>
+            <tbody>
+            {% for item in container.item_set.all %}
+                <tr>
+                    <td><a href="{{ item.link }}">{{ item.name }}</a></td>
+                    <td>{{ item.quantity }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
         </table>
     {% else %}
         <p><span class="text-muted">This container is empty.</span></p>
