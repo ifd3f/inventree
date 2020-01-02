@@ -1,39 +1,59 @@
 from django.conf.urls import url
+from django.db.models import F, Sum
 from django.urls import include
-from rest_framework import routers, viewsets
+from rest_framework import routers
+from rest_framework.decorators import api_view, renderer_classes
 
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer, BrowsableAPIRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
-# ViewSets define the view behavior.
 from inventory.models import Item, Container, ItemTag
 from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSerializer
 
 
-class ItemViewSet(viewsets.ModelViewSet):
-    queryset = Item.objects.all()
+class ItemViewSet(ModelViewSet):
+    def get_queryset(self):
+        should_filter_restock = self.request.query_params.get('needs_restock', False)
+        query = Item.objects.all()
+        if should_filter_restock:
+            query.filter(quantity__lte=F('alert_quantity'))
+        return query
+
     serializer_class = ItemSerializer
 
 
-class RestockItemViewSet(viewsets.ModelViewSet):
-    queryset = Item.objects.filter()
-    serializer_class = ItemSerializer
-
-
-class ContainerViewSet(viewsets.ModelViewSet):
+class ContainerViewSet(ModelViewSet):
     queryset = Container.objects.all()
     serializer_class = ContainerSerializer
 
 
-class ItemTagViewSet(viewsets.ModelViewSet):
+class ItemTagViewSet(ModelViewSet):
     queryset = ItemTag.objects.all()
     serializer_class = ItemTagSerializer
 
 
+class InfoView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        return Response({
+            'total_item_count': Item.objects.aggregate(item_count=Sum('quantity'))['item_count'],
+            'container_count': Container.objects.count()
+        })
+
+
 router = routers.DefaultRouter()
-router.register(r'items', ItemViewSet)
+router.register(r'items', ItemViewSet, basename='item')
 router.register(r'containers', ContainerViewSet)
 router.register(r'item-tags', ItemTagViewSet)
 
+
 urlpatterns = [
+    url(r'^info$', InfoView.as_view()),
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

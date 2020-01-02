@@ -13,6 +13,7 @@
     "react-scripts": "3.3.0",
     "reactstrap": "^8.2.0"
   },
+  "proxy": "http://localhost:8000",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
