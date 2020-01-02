@@ -12,11 +12,19 @@ CONTAINER_TYPE_CHOICES = {
 }
 
 
+MAX_IMG_SIZE_MB = 5.0
+
+def validate_image(file_obj):
+    if file_obj is not None and file_obj.file.size > MAX_IMG_SIZE_MB * 1024 * 1024:
+        raise ValidationError(f'Max file size is {MAX_IMG_SIZE_MB} MB')
+
+
 class Container(models.Model):
     name = models.CharField(
         verbose_name='name',
         max_length=100
     )
+    image = models.ImageField(upload_to='container/', null=True, validators=[validate_image])
     description = models.TextField('description', blank=True)
     location = models.TextField('location', blank=True)
     container_type = models.CharField(
@@ -72,6 +80,7 @@ class ItemTag(models.Model):
 
 class Item(models.Model):
     name = models.CharField(verbose_name='name', max_length=100)
+    image = models.ImageField(upload_to='item/', null=True, validators=[validate_image])
     description = models.TextField('description', blank=True)
     quantity = models.IntegerField('quantity', default=0)
     alert_quantity = models.IntegerField('alert quantity', default=0)
