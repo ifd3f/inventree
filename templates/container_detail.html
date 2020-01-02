@@ -5,6 +5,13 @@
     {% if container.parent %}
         <p>Contained in <a href="{{ item.parent.link }}">{{ item.parent.name }}</a></p>
     {% endif %}
+
+    {% if container.image %}
+        <img src="{{ container.image.url }}">
+    {% else %}
+        <p>No image provided.</p>
+    {% endif %}
+
     <table class="table">
         <tr>
             <th>Type</th>

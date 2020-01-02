@@ -5,6 +5,7 @@
     {% if item.parent %}
         <p>Contained in <a href="{{ item.parent.link }}">{{ item.parent.name }}</a></p>
     {% endif %}
+    <img src="{{ item.image.url }}">
     <table class="table">
         <tr>
             <th>Quantity</th>
