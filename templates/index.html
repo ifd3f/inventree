@@ -1,7 +1,7 @@
 {% extends "skeleton_main.html" %}
 
 {% block content %}
-    <p>Tracking {{ items.total_count|default:"0" }} items in {{ containers.count|default:"0" }} containers</p>
+    <p>Tracking {{ item_query.item_count|default:"0" }} items in {{ containers.count|default:"0" }} containers</p>
     <h3>Restock Alert</h3>
     {% if restock_items %}
         <table class="table">

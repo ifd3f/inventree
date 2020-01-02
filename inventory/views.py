@@ -21,7 +21,7 @@ def search(request):
 def index(request):
     restock_query = Item.objects.all().filter(quantity__lte=F('alert_quantity'))
     context = {
-        'items': Item.objects.annotate(total_count=Sum('quantity')),
+        'item_query': Item.objects.aggregate(item_count=Sum('quantity')),
         'containers': Container.objects,
         'restock_items': restock_query
     }
