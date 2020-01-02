@@ -11,8 +11,8 @@ CONTAINER_TYPE_CHOICES = {
     'OT': 'other'
 }
 
-
 MAX_IMG_SIZE_MB = 5.0
+
 
 def validate_image(file_obj):
     if file_obj is not None and file_obj.file.size > MAX_IMG_SIZE_MB * 1024 * 1024:
@@ -57,7 +57,8 @@ class Container(models.Model):
         while node.parent is not None:
             node = node.parent
             if node == self:
-                raise ValidationError('Containers cannot be circularly contained within themselves... with current technology.')
+                raise ValidationError(
+                    'Containers cannot be circularly contained within themselves... with current technology.')
 
 
 class ItemTag(models.Model):

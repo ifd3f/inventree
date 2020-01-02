@@ -1,6 +1,10 @@
+from django.conf.urls import url
 from django.urls import path
+from rest_framework import serializers
 
+from inventory.models import Item
 from . import views
+
 
 urlpatterns = [
     path('add', views.add, name='add'),
