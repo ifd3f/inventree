@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./Browser.css"
+import { ChevronRightIcon, ChevronBottomIcon } from 'react-open-iconic-svg';
 
 
 const NODE_COLLAPSED = 0
@@ -40,13 +41,13 @@ class Node extends Component {
   getArrow() {
     switch (this.state.collapse) {
       case NODE_COLLAPSED:
-        return <span className="caret" onClick={this.handleExpand}/>
+        return <span role="button" onClick={this.handleExpand}><ChevronRightIcon /></span>
       case NODE_LOADING:
         return <div className="spinner-border text-primary" role="status">
           <span className="sr-only">Loading...</span>
         </div>
       case NODE_EXPANDED:
-        return <span className="caret caret-down" onClick={this.handleCollapse}/>
+        return <span role="button" onClick={this.handleCollapse}><ChevronBottomIcon /></span>
       default:
         break;
     }
@@ -54,6 +55,9 @@ class Node extends Component {
 
   getChildrenView() {
     if (this.state.collapse === NODE_EXPANDED) {
+      if (this.state.children.length == 0) {
+        return <li className="text-muted"><em>No subcontainers.</em></li>
+      }
       return this.state.children.map(container =>
         <Node container={{container}}/>
       )
@@ -62,12 +66,12 @@ class Node extends Component {
   }
 
   render() {
-    return <div key="{this.container.id}">
-      {this.getArrow()} {this.container.name}
-      <div style={{marginLeft: "1em"}}>
+    return <li key="{this.container.id}">
+      <div>{this.getArrow()} {this.container.name}</div>
+      <ul className="container-tree">
         {this.getChildrenView()}
-      </div>
-    </div>
+      </ul>
+    </li>
   }
 }
 
@@ -94,9 +98,9 @@ class ObjectBrowser extends Component {
 
   render() {
     if (this.state.dataActive) {
-      return <div>
+      return <ul className="container-tree">
         {this.state.rootContainers.map(container => <Node container={{container}}/>)}
-      </div>
+      </ul>
     } else {
       return <div>
         <div className="d-flex justify-content-center">
@@ -109,6 +113,7 @@ class ObjectBrowser extends Component {
   }
 }
 
+
 class Browser extends Component {
   render() {
     return <div className="container-fluid">
@@ -116,5 +121,6 @@ class Browser extends Component {
     </div>
   }
 }
+
 
 export default Browser;
