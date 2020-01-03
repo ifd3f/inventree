@@ -19,4 +19,3 @@ class ItemTagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ItemTag
         fields = ['name', 'item_set']
-
