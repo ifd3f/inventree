@@ -19,14 +19,22 @@ class ItemViewSet(ModelViewSet):
         should_filter_restock = self.request.query_params.get('needs_restock', False)
         query = Item.objects.all()
         if should_filter_restock:
-            query.filter(quantity__lte=F('alert_quantity'))
+            query = query.filter(quantity__lte=F('alert_quantity'))
         return query
 
     serializer_class = ItemSerializer
 
 
 class ContainerViewSet(ModelViewSet):
-    queryset = Container.objects.all()
+    def get_queryset(self):
+        parent = self.request.query_params.get('parent', None)
+        query = Container.objects.all()
+        if parent:
+            if parent == '-1':
+                query = query.filter(parent__isnull=True)
+            else:
+                query = query.filter(parent__exact=parent)
+        return query
     serializer_class = ContainerSerializer
 
 
@@ -48,7 +56,7 @@ class InfoView(APIView):
 
 router = routers.DefaultRouter()
 router.register(r'items', ItemViewSet, basename='item')
-router.register(r'containers', ContainerViewSet)
+router.register(r'containers', ContainerViewSet, basename='container')
 router.register(r'item-tags', ItemTagViewSet)
 
 
