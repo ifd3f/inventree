@@ -15,7 +15,7 @@ function Navbar(props) {
   return (
     <header className="app-header navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
       <span className="navbar-brand mr-0 mr-md-2" role="button">
-        <h2>Unrefined Stockpile</h2>
+        <h2 class="text-small">Unrefined Stockpile</h2>
       </span>
       <span className="navbar-nav bd-navbar-nav flex-row" role="button">
         <li className="nav-item">

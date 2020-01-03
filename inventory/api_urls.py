@@ -15,27 +15,38 @@ from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSe
 
 
 class ItemViewSet(ModelViewSet):
-    def get_queryset(self):
-        should_filter_restock = self.request.query_params.get('needs_restock', False)
-        query = Item.objects.all()
-        if should_filter_restock:
-            query = query.filter(quantity__lte=F('alert_quantity'))
-        return query
-
     serializer_class = ItemSerializer
 
-
-class ContainerViewSet(ModelViewSet):
     def get_queryset(self):
+        query = Item.objects.all()
+
+        should_filter_restock = self.request.query_params.get('needs_restock', False)
+        if should_filter_restock:
+            query = query.filter(quantity__lte=F('alert_quantity'))
+
         parent = self.request.query_params.get('parent', None)
-        query = Container.objects.all()
         if parent:
             if parent == '-1':
                 query = query.filter(parent__isnull=True)
             else:
                 query = query.filter(parent__exact=parent)
         return query
+
+
+class ContainerViewSet(ModelViewSet):
     serializer_class = ContainerSerializer
+
+    def get_queryset(self):
+        query = Container.objects.all()
+
+        parent = self.request.query_params.get('parent', None)
+        if parent:
+            if parent == '-1':
+                query = query.filter(parent__isnull=True)
+            else:
+                query = query.filter(parent__exact=parent)
+
+        return query
 
 
 class ItemTagViewSet(ModelViewSet):
