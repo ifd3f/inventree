@@ -8370,6 +8370,11 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-open-iconic-svg@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-open-iconic-svg/-/react-open-iconic-svg-3.0.1.tgz#502fe4580f9567cea06460574af8dd051acdd55f"
+  integrity sha512-oZkq5REyWOnLO2NpaDNl0xxQhPQvBWrevhhfVxNlNdWJJ9cjeEkbVuirCJoNv7MQBqjGGyeHINLnrNVMdYyoxQ==
+
 react-popper@^1.3.3:
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-1.3.7.tgz#f6a3471362ef1f0d10a4963673789de1baca2324"
