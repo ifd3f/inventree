@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-function MaybeNotProvided(props) {
+export function MaybeNotProvided(props) {
   if (props.value) {
     return props.value;
   } else if (props.type) {
@@ -10,7 +10,7 @@ function MaybeNotProvided(props) {
   }
 }
 
-function MaybeNameURL(props) {
+export function MaybeNameURL(props) {
   let urlOnlyStyle = props.style ? props.style : {overflow: 'hidden', textOverflow: 'ellipsis'};
   if (props.name) {
     if (props.url) {
@@ -26,5 +26,3 @@ function MaybeNameURL(props) {
     }
   }
 }
-
-export default {MaybeNameURL, MaybeNotProvided};
