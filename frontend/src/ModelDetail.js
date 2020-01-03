@@ -1,6 +1,76 @@
 import React, { Component } from "react";
 import {MaybeNameURL, MaybeNotProvided} from "./snippets.js";
 import axios from "axios";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useParams
+} from "react-router-dom";
+
+
+export function RoutedContainerDetail(props) {
+  let {containerId} = useParams();
+  return <DynamicallyLoadedContainerDetail id={containerId}/>
+}
+
+
+export class DynamicallyLoadedContainerDetail extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: props.id,
+      loaded: false,
+      container: null
+    }
+  }
+
+  static getDerivedStateFromProps(props, prevState) {
+    if (props.id !== prevState.id) {
+      return {
+        id: props.id,
+        loaded: false,
+        container: null
+      }
+    }
+    return null;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.id && !this.state.loaded) {
+      this.fetchData();
+    }
+  }
+
+  fetchData() {
+    if (!this.state.id) {
+      this.setState({
+        loaded: true, 
+        container: null
+      });
+      return;
+    }
+
+    console.log(this.state)
+    axios.get(`/api/containers/${this.state.id}`)
+      .then(res => {
+        this.setState({
+          loaded: true,
+          container: res.data
+        })
+      })
+  }
+
+  render() {
+    if (this.state.loaded) {
+      return <ContainerDetail container={this.state.container}/>
+    } else {
+      return null;
+    }
+  }
+}
+
 
 function ContainerContentsRow(props) {
   let key = `item-row-${props.item.id}`;

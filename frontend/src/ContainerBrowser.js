@@ -1,8 +1,15 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./ContainerBrowser.css"
-import { ContainerDetail } from "./ModelDetail.js"
+import { RoutedContainerDetail } from "./ModelDetail.js"
 import { ChevronRightIcon, ChevronBottomIcon } from 'react-open-iconic-svg';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useParams
+} from "react-router-dom";
 
 
 const NODE_COLLAPSED = 0
@@ -73,12 +80,17 @@ class Node extends Component {
 
   handleNameClick() {
     this.handleExpand()
-    this.onSelectContainer(this.container);
+    //this.onSelectContainer(this.container);
   }
 
   render() {
     return <li key="{this.container.id}">
-      <div>{this.getArrow()} <button className="btn btn-sm btn-link" onClick={this.handleNameClick}>{this.container.name}</button></div>
+      <div>
+        {this.getArrow()}
+        <Link to={"/browse/" + this.container.id} onClick={this.handleNameClick}>
+          {this.container.name}
+        </Link>
+      </div>
       <ul className="container-tree">
         {this.getChildrenView()}
       </ul>
@@ -149,7 +161,8 @@ class ContainerBrowser extends Component {
           <ContainerHiearchyBrowser onSelectContainer={this.onSelectContainer} />
         </div>
         <main className="col-12 col-md-9 col-xl-flex bd-content">
-          <ContainerDetail container={this.state.selectedContainer} />
+          <Route path="/browse/:containerId" component={RoutedContainerDetail}>
+          </Route>
         </main>
       </div>
     </div>
