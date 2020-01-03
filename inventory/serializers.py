@@ -6,13 +6,13 @@ from inventory.models import Item, Container, ItemTag
 class ContainerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Container
-        fields = ['name', 'image', 'description', 'location', 'container_type']
+        fields = ['id', 'name', 'image', 'description', 'location', 'container_type', 'parent']
 
 
 class ItemSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Item
-        fields = ['name', 'image', 'description', 'quantity', 'alert_quantity', 'source', 'source_url', 'parent', 'tags']
+        fields = ['id', 'name', 'image', 'description', 'quantity', 'alert_quantity', 'source', 'source_url', 'parent', 'tags']
 
 
 class ItemTagSerializer(serializers.HyperlinkedModelSerializer):
