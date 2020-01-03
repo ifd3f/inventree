@@ -1,35 +1,13 @@
 import React, { Component } from "react";
 import axios from "axios";
-import "./Browser.css"
+import "./ContainerBrowser.css"
+import { ContainerDetail } from "./ModelDetail.js"
 import { ChevronRightIcon, ChevronBottomIcon } from 'react-open-iconic-svg';
 
 
 const NODE_COLLAPSED = 0
 const NODE_LOADING = 1
 const NODE_EXPANDED = 2
-
-
-class ContainerViewer extends Component {
-  constructor(props) {
-    super(props);
-    this.container = props.container;
-  }
-
-  componentWillReceiveProps(props) {
-    this.container = props.container;
-  }
-
-  render() {
-    if (this.container == null) {
-      return <div>
-        <h1 className="text-muted">Select a container on the left.</h1>
-      </div>
-    }
-    return <div>
-      <h1>{this.container.name}</h1>
-    </div>
-  }
-}
 
 
 class Node extends Component {
@@ -147,7 +125,7 @@ class ContainerHiearchyBrowser extends Component {
 }
 
 
-class Browser extends Component {
+class ContainerBrowser extends Component {
   constructor(props) {
     super(props);
 
@@ -171,7 +149,7 @@ class Browser extends Component {
           <ContainerHiearchyBrowser onSelectContainer={this.onSelectContainer} />
         </div>
         <main className="col-12 col-md-9 col-xl-flex bd-content">
-          <ContainerViewer container={this.state.selectedContainer} />
+          <ContainerDetail container={this.state.selectedContainer} />
         </main>
       </div>
     </div>
@@ -179,4 +157,4 @@ class Browser extends Component {
 }
 
 
-export default Browser;
+export default ContainerBrowser;
