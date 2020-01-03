@@ -89,11 +89,21 @@ export class ContainerDetail extends Component {
     }
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({container: props.container})
+  static getDerivedStateFromProps(props, prevState) {
+    if (props.container !== prevState.container) {
+      return {
+        container: props.container,
+        items: null
+      }
+    }
+    return null;
+  }
+  
+  componentDidUpdate(prevProps, prevState) {
+    this.loadItems()
   }
 
-  loadContents() {
+  loadItems() {
     axios.get('/api/items')
       .then(res => {
         this.setState({
