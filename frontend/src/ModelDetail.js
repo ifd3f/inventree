@@ -26,6 +26,10 @@ export class DynamicallyLoadedContainerDetail extends Component {
     }
   }
 
+  componentDidMount() {
+    this.fetchData();
+  }
+
   static getDerivedStateFromProps(props, prevState) {
     if (props.id !== prevState.id) {
       return {
