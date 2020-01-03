@@ -1,49 +1,58 @@
-from django.db.models import Sum, Count, F
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.template import loader
+from django.db.models import F, Sum
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
-from inventory.forms import SearchForm
 from inventory.models import Item, Container, ItemTag
+from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSerializer
 
 
-def search(request):
-    form = SearchForm(request.GET)
-    if form.is_valid():
-        context = {
-            'items': Item.objects.annotate(total_count=Sum('quantity')),
-            'containers': Container.objects,
-            'results': form.get_results()
-        }
-        return render(request, 'search.html', context)
+class ItemViewSet(ModelViewSet):
+    serializer_class = ItemSerializer
+
+    def get_queryset(self):
+        query = Item.objects.all()
+
+        should_filter_restock = self.request.query_params.get('needs_restock', False)
+        if should_filter_restock:
+            query = query.filter(quantity__lte=F('alert_quantity'))
+
+        parent = self.request.query_params.get('parent', None)
+        if parent:
+            if parent == '-1':
+                query = query.filter(parent__isnull=True)
+            else:
+                query = query.filter(parent__exact=parent)
+        return query
 
 
-def index(request):
-    restock_query = Item.objects.all().filter(quantity__lte=F('alert_quantity'))
-    context = {
-        'item_query': Item.objects.aggregate(item_count=Sum('quantity')),
-        'containers': Container.objects,
-        'restock_items': restock_query
-    }
-    print(context)
-    return render(request, 'index.html', context)
+class ContainerViewSet(ModelViewSet):
+    serializer_class = ContainerSerializer
+
+    def get_queryset(self):
+        query = Container.objects.all()
+
+        parent = self.request.query_params.get('parent', None)
+        if parent:
+            if parent == '-1':
+                query = query.filter(parent__isnull=True)
+            else:
+                query = query.filter(parent__exact=parent)
+
+        return query
 
 
-def add(request):
-    return render(request, 'add.html', {})
+class ItemTagViewSet(ModelViewSet):
+    queryset = ItemTag.objects.all()
+    serializer_class = ItemTagSerializer
 
 
-def item_detail(request, item_id):
-    context = {'item': Item.objects.get(id=item_id)}
-    return render(request, 'item_detail.html', context)
+class InfoView(APIView):
+    authentication_classes = []
+    permission_classes = []
 
-
-def container_detail(request, container_id):
-    context = {'container': Container.objects.get(id=container_id)}
-    return render(request, 'container_detail.html', context)
-
-
-def tag_detail(request, tag_name):
-    tag = ItemTag.objects.get(pk=tag_name)
-    context = {'tag': tag}
-    return render(request, 'tag_detail.html', context)
+    def get(self, request):
+        return Response({
+            'total_item_count': Item.objects.aggregate(item_count=Sum('quantity'))['item_count'],
+            'container_count': Container.objects.count()
+        })

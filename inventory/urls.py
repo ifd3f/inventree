@@ -1,16 +1,17 @@
 from django.conf.urls import url
-from django.urls import path
-from rest_framework import serializers
+from django.urls import include
+from rest_framework import routers
 
-from inventory.models import Item
-from . import views
+from inventory.views import ItemViewSet, ContainerViewSet, ItemTagViewSet, InfoView
+
+router = routers.DefaultRouter()
+router.register(r'items', ItemViewSet, basename='item')
+router.register(r'containers', ContainerViewSet, basename='container')
+router.register(r'item-tags', ItemTagViewSet)
 
 
 urlpatterns = [
-    path('add', views.add, name='add'),
-    path('search', views.search, name='search'),
-    path('tag/<tag_name>', views.tag_detail, name='tag'),
-    path('item/<int:item_id>', views.item_detail, name='item'),
-    path('container/<int:container_id>', views.container_detail, name='container'),
-    path('', views.index, name='index'),
+    url(r'^info$', InfoView.as_view()),
+    url(r'^', include(router.urls)),
+    url(r'^auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
