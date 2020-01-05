@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {MaybeNameURL, MaybeNotProvided} from "./snippets.js";
+import {MaybeNameURL, MaybeNotProvided} from "./util.js"
 import axios from "axios";
 import {
   BrowserRouter as Router,
@@ -115,11 +115,11 @@ function ContainerInfoCard(props) {
             </tr>
             <tr>
               <th>Location</th>
-              <td><MaybeNotProvided value={container.location} type="location" /></td>
+              <td><MaybeNotProvided type="location">{container.location}</MaybeNotProvided></td>
             </tr>
           </tbody>
         </table>
-        <p><MaybeNotProvided value={container.description} type="description" /></p>
+        <p><MaybeNotProvided type="description">{container.description}</MaybeNotProvided></p>
       </div>
     </div>
   );
