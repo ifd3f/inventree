@@ -69,7 +69,7 @@ class Node extends Component {
   getChildrenView() {
     if (this.state.collapse === NODE_EXPANDED) {
       if (this.state.children.length === 0) {
-        return <li className="text-muted"><em>No subcontainers.</em></li>
+        return <li className="text-muted" key={this.container.id}><em>No subcontainers.</em></li>
       }
       return this.state.children.map(container =>
         <Node container={container} onSelectContainer={this.onSelectContainer}/>
@@ -84,7 +84,7 @@ class Node extends Component {
   }
 
   render() {
-    return <li key="{this.container.id}">
+    return <li key={this.container.id}>
       <div>
         {this.getArrow()}
         <Link to={"/browse/" + this.container.id} onClick={this.handleNameClick}>

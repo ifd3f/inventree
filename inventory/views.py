@@ -1,4 +1,5 @@
 from django.db.models import F, Sum
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -41,6 +42,29 @@ class ContainerViewSet(ModelViewSet):
 
         return query
 
+    @action(methods=['get'], detail=True)
+    def all_parents(self, request, pk):
+        container = Container.objects.get(pk=pk)
+        node = container
+        path = []
+        while node is not None:
+            path.append(node)
+            node = node.parent
+        serializer = ContainerSerializer(path, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=True)
+    def items(self, request, pk):
+        items = Item.objects.filter(parent__exact=pk)
+        serializer = ItemSerializer(items, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=True)
+    def children(self, request, pk):
+        containers = Container.objects.filter(parent__exact=pk)
+        serializer = ContainerSerializer(containers, many=True, context={'request': request})
+        return Response(serializer.data)
+
 
 class ItemTagViewSet(ModelViewSet):
     queryset = ItemTag.objects.all()
@@ -56,3 +80,15 @@ class InfoView(APIView):
             'total_item_count': Item.objects.aggregate(item_count=Sum('quantity'))['item_count'],
             'container_count': Container.objects.count()
         })
+
+
+class AllParentsView(ModelViewSet):
+    serializer_class = Container
+
+    def get_queryset(self):
+        node = Container.objects.get(id=self.request.query_params['id'])
+        out = []
+        while node is not None:
+            out.append(node)
+            node = node.parent
+        return out
