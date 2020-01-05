@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 export function MaybeNotProvided(props) {
-  if (props.value) {
-    return props.value;
+  if (props.children) {
+    return props.children;
   } else if (props.type) {
     return <span className="text-muted font-weight-italic">No {props.type} provided.</span>;
   } else {
@@ -10,13 +10,13 @@ export function MaybeNotProvided(props) {
   }
 }
 
-export function MaybeNameURL(props) {
+export function MaybeLink(props) {
   let urlOnlyStyle = props.style ? props.style : {overflow: 'hidden', textOverflow: 'ellipsis'};
-  if (props.name) {
+  if (props.children) {
     if (props.url) {
-      return <a href={props.url}>props.name</a>
+      return <a href={props.url}>{props.children}</a>
     } else {
-      return props.name;
+      return props.children;
     }
   } else {
     if (props.url) {
