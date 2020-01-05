@@ -88,9 +88,9 @@ function ItemRow(props) {
 function ContainerRow(props) {
   let container = props.container
   return <tr key={`c-${container.id}`}>
-    <td>{props.container.name}</td>
+    <td><Link to={`/browse/${container.id}`}>{container.name}</Link></td>
     <td>Container</td>
-    <td>{props.container.description}</td>
+    <td>{container.description}</td>
   </tr>
 }
 
