@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.urls import include
 from rest_framework import routers
 
-from inventory.views import ItemViewSet, ContainerViewSet, ItemTagViewSet, InfoView
+from inventory.views import ItemViewSet, ContainerViewSet, ItemTagViewSet, InfoView, AllParentsView
 
 router = routers.DefaultRouter()
 router.register(r'items', ItemViewSet, basename='item')

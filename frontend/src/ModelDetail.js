@@ -8,6 +8,7 @@ import {
   Link,
   useParams
 } from "react-router-dom";
+import { Container } from "reactstrap";
 
 
 export function RoutedContainerDetail(props) {
@@ -31,7 +32,7 @@ export class DynamicallyLoadedContainerDetail extends Component {
   }
 
   static getDerivedStateFromProps(props, prevState) {
-    if (props.id !== prevState.id) {
+    if (!prevState || props.id !== prevState.id) {
       return {
         id: props.id,
         loaded: false,
@@ -56,7 +57,6 @@ export class DynamicallyLoadedContainerDetail extends Component {
       return;
     }
 
-    console.log(this.state)
     axios.get(`/api/containers/${this.state.id}`)
       .then(res => {
         this.setState({
@@ -76,44 +76,209 @@ export class DynamicallyLoadedContainerDetail extends Component {
 }
 
 
-function ContainerContentsRow(props) {
-  let key = `item-row-${props.item.id}`;
-  return <tr key={key}>
-    <td key={key}>{props.item.name}</td>
+function ItemRow(props) {
+  let item = props.item
+  return <tr key={`i-${item.id}`}>
+    <td>{`${props.item.name} x ${props.item.quantity}`}</td>
+    <td>Item</td>
+    <td>{props.item.description}</td>
+  </tr>
+}
+
+function ContainerRow(props) {
+  let container = props.container
+  return <tr key={`c-${container.id}`}>
+    <td>{props.container.name}</td>
+    <td>Container</td>
+    <td>{props.container.description}</td>
   </tr>
 }
 
 
+function ContainerInfoCard(props) {
+  let container = props.container;
+  let imageSection = null;
+  if (container.image) {
+    imageSection = <img class="card-img" src={container.image} alt={"Image of " + container.name} />
+  }
+
+  return (
+    <div className="card w-100">
+      <h3 className="card-title">{container.name}</h3>
+      {imageSection}
+      <div className="card-body">
+        <table className="table">
+          <tbody>
+            <tr>
+              <th>Type</th>
+              <td>{container.container_type}</td>
+            </tr>
+            <tr>
+              <th>Location</th>
+              <td><MaybeNotProvided value={container.location} type="location" /></td>
+            </tr>
+          </tbody>
+        </table>
+        <p><MaybeNotProvided value={container.description} type="description" /></p>
+      </div>
+    </div>
+  );
+}
+
+
+function StatelessContainerContentsTable(props) {
+  let body;
+  if (props.contents) {
+    let containers = props.contents.containers.map(container => <ContainerRow container={container} />);
+    let items = props.contents.items.map(item => <ItemRow item={item} />);
+    body = <>
+      {containers}
+      {items}
+    </>;
+  }
+  if (!body) {
+    body = <p className="text-muted">This container is empty.</p>;
+  }
+
+  return <table className="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {body}
+    </tbody>
+  </table>
+}
+
+class FetchedContainerContentsTable extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: props.id,
+      containersFetched: false,
+      containers: [],
+      itemsFetched: false,
+      items: []      
+    }
+  }
+  static getDerivedStateFromProps(props, prevState) {
+    if (!prevState || props.id !== prevState.id) {
+      return {
+        id: props.id,
+        containersFetched: false,
+        containers: [],
+        itemsFetched: false,
+        items: []
+      }
+    }
+    return null;
+  }
+
+  componentDidMount() {
+    this.loadContainers();
+    this.loadItems();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log(this.state)
+    if (!this.state.containersFetched) {
+      this.loadContainers();
+    }
+    if (!this.state.itemsFetched) {
+      this.loadItems();
+    }
+  }
+
+  loadContainers() {
+    axios.get(`/api/containers/${this.state.id}/children`)
+      .then(res => {
+        this.setState({
+          containersFetched: true,
+          containers: res.data
+        })
+      });
+  }
+
+  loadItems() {
+    axios.get(`/api/containers/${this.state.id}/items`)
+      .then(res => {
+        this.setState({
+          itemsFetched: true,
+          items: res.data
+        })
+      });
+  }
+
+  render() {
+    if (this.state.containersFetched && this.state.itemsFetched) {
+      return <StatelessContainerContentsTable contents={{items: this.state.items, containers: this.state.containers}} />
+    } else {
+      return <div className="spinner-border text-primary m-5" role="status">
+        <span className="sr-only">Loading...</span>
+      </div>
+    }
+  }
+
+}
+
+
 export class ContainerDetail extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
       container: props.container,
-      items: null
+      containersFetched: false,
+      containers: [],
+      itemsFetched: true,
+      items: []
     }
   }
 
   static getDerivedStateFromProps(props, prevState) {
-    if (props.container !== prevState.container) {
+    if (!prevState || props.container !== prevState.container) {
       return {
         container: props.container,
-        items: null
+        containersFetched: false,
+        containers: [],
+        itemsFetched: false,
+        items: []
       }
     }
     return null;
   }
   
   componentDidUpdate(prevProps, prevState) {
-    this.loadItems()
+    if (!this.state.containersFetched) {
+      this.loadContainers();
+    }
+    if (!this.state.itemsFetched) {
+      this.loadItems();
+    }
+  }
+
+  loadContainers() {
+    axios.get(`/api/containers/${this.state.container.id}/children`)
+      .then(res => {
+        this.setState({
+          containersFetched: true,
+          containers: res.data
+        })
+      });
   }
 
   loadItems() {
-    axios.get('/api/items')
+    axios.get(`/api/items/${this.state.container.id}/items`)
       .then(res => {
         this.setState({
+          itemsFetched: true,
           items: res.data
         })
-      })
+      });
   }
 
   render() {
@@ -124,43 +289,19 @@ export class ContainerDetail extends Component {
       </div>
     }
 
-    let imageSection = <></>;
-    if (container.image) {
-      imageSection = <img class="card-img" src={container.image} alt={"Image of " + container.name} />
-    }
+    return (
+      <div>
+        <div className="row flex-xl-nowrap">
 
-    return <div>
-      <div className="card float-right" style={{ width: "18rem" }}>
-        {imageSection}
-        <div className="card-body">
-          <table className="table">
-            <tr>
-              <th>Type</th>
-              <td>{container.container_type}</td>
-            </tr>
-            <tr>
-              <th>Location</th>
-              <td><MaybeNotProvided value={container.location} type="location" /></td>
-            </tr>
-          </table>
+          <div className="col-sm col-md-3">
+            <ContainerInfoCard container={this.state.container}/>
+          </div>
+          <div className="col-md">
+            <h2>Contents</h2>
+            <FetchedContainerContentsTable id={this.state.container.id}/>
+          </div>
         </div>
       </div>
-
-      <h1>{container.name}</h1>
-
-      <p><MaybeNotProvided value={container.description} type="description" /></p>
-
-      <h2>Items</h2>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Tags</th>
-          </tr>
-        </thead>
-      </table>
-      
-    </div>
+    )
   }
 }
