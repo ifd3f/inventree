@@ -2,40 +2,33 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from jsonfield import JSONField
 
-CONTAINER_TYPE_CHOICES = {
-    'BX': 'box',
-    'SL': 'shelf',
-    'DR': 'drawer',
-    'RM': 'room',
-    'SR': 'surface',
-    'WL': 'wall',
-    'OT': 'other'
-}
+
+CONTAINER_TYPE_DEFAULT = 0
+CONTAINER_TYPE_GRID = 1
+CONTAINER_TYPE_FREEFORM = 2
+
+CONTAINER_TYPE_CHOICES = [
+    (CONTAINER_TYPE_DEFAULT, 'default'),
+    (CONTAINER_TYPE_GRID, 'grid'),
+    (CONTAINER_TYPE_FREEFORM, 'freeform')
+]
 
 
 class Node(models.Model):
-    name = models.CharField(
-        max_length=100
-    )
-    description = models.TextField('description', blank=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
     image = models.ImageField(upload_to='container/', null=True)
-    location = models.TextField('location', blank=True)
 
     parent = models.ForeignKey('Container', on_delete=models.SET_NULL, blank=True, null=True)
-    container_metadata = JSONField(default={})
+    location_metadata = JSONField(default={})
 
     class Meta:
         abstract = True
 
 
 class Container(Node):
-    location = models.TextField('location', blank=True)
-    container_type = models.CharField(
-        max_length=2,
-        choices=CONTAINER_TYPE_CHOICES.items(),
-        blank=False,
-        default='BX'
-    )
+    container_type = models.IntegerField(choices=CONTAINER_TYPE_CHOICES, default=CONTAINER_TYPE_DEFAULT)
+    metadata = JSONField(default={})
 
     @property
     def link(self):
@@ -46,8 +39,6 @@ class Container(Node):
         return CONTAINER_TYPE_CHOICES[self.container_type]
 
     def __str__(self):
-        if self.location != '':
-            return f'{self.name} at {self.location}'
         return self.name
 
     def __repr__(self):
