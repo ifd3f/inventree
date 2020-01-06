@@ -12,6 +12,12 @@ CONTAINER_TYPE_CHOICES = {
 }
 
 
+class Node(models.Model):
+    
+    class Meta:
+        abstract = True
+
+
 class Container(models.Model):
     name = models.CharField(
         verbose_name='name',
