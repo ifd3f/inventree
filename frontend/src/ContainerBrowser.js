@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./ContainerBrowser.css"
-import { RoutedContainerDetail } from "./detail/ModelDetail.js"
+import { RoutedContainerDetail } from "./detail/ContainerDetail.js"
 import { ChevronRightIcon, ChevronBottomIcon } from 'react-open-iconic-svg';
 import {
   BrowserRouter as Router,

@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {MaybeNotProvided} from "../util.js"
 import axios from "axios";
 import {useParams} from "react-router-dom";
-import {FetchedContainerContentsTable} from "./ContentsTable";
+import {FetchedContents} from "../container/Fetcher";
 
 
 export function RoutedContainerDetail(props) {
@@ -157,7 +157,7 @@ export class ContainerDetail extends Component {
   }
 
   render() {
-    let container = this.state.container;
+    let container = this.props.container;
     if (container == null) {
       return <div>
         <h1 className="text-muted">Select a container on the left.</h1>
@@ -169,11 +169,11 @@ export class ContainerDetail extends Component {
         <div className="row flex-xl-nowrap">
 
           <div className="col-sm col-md-3">
-            <ContainerInfoCard container={this.state.container}/>
+            <ContainerInfoCard container={container}/>
           </div>
           <div className="col-md">
             <h2>Contents</h2>
-            <FetchedContainerContentsTable id={this.state.container.id}/>
+            <FetchedContents container={container}/>
           </div>
         </div>
       </div>
