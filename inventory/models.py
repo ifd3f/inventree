@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from jsonfield import JSONField
 
 CONTAINER_TYPE_CHOICES = {
     'BX': 'box',
@@ -13,18 +14,21 @@ CONTAINER_TYPE_CHOICES = {
 
 
 class Node(models.Model):
-    
+    name = models.CharField(
+        max_length=100
+    )
+    description = models.TextField('description', blank=True)
+    image = models.ImageField(upload_to='container/', null=True)
+    location = models.TextField('location', blank=True)
+
+    parent = models.ForeignKey('Container', on_delete=models.SET_NULL, blank=True, null=True)
+    container_metadata = JSONField(default={})
+
     class Meta:
         abstract = True
 
 
-class Container(models.Model):
-    name = models.CharField(
-        verbose_name='name',
-        max_length=100
-    )
-    image = models.ImageField(upload_to='container/', null=True)
-    description = models.TextField('description', blank=True)
+class Container(Node):
     location = models.TextField('location', blank=True)
     container_type = models.CharField(
         max_length=2,
@@ -32,7 +36,6 @@ class Container(models.Model):
         blank=False,
         default='BX'
     )
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
 
     @property
     def link(self):
@@ -78,13 +81,9 @@ class ItemTag(models.Model):
         return f'ItemTag({self.name})'
 
 
-class Item(models.Model):
-    name = models.CharField(verbose_name='name', max_length=100)
-    image = models.ImageField(upload_to='item/', null=True)
-    description = models.TextField('description', blank=True)
+class Item(Node):
     quantity = models.IntegerField('quantity', default=0)
     alert_quantity = models.IntegerField('alert quantity', default=0)
-    parent = models.ForeignKey(Container, verbose_name='container', on_delete=models.SET_NULL, blank=True, null=True)
     source = models.CharField(verbose_name='source', max_length=200, blank=True, default='')
     source_url = models.URLField(verbose_name='source URL', blank=True, null=True)
     tags = models.ManyToManyField(ItemTag)
