@@ -1,23 +1,6 @@
 import React, { Component } from 'react';
 import axios from "axios";
-
-
-function getItemSource(item) {
-  /*
-                          {% if not item.source and not item.source_url %}
-                            <span class="text-muted">N/A</span>
-                        {% elif item.source and not item.source_url %}
-                            {{ item.source }}
-                        {% elif not item.source and item.source_url %}
-                            <a href="{{ item.url }}">{{ item.url|truncatechars:50 }}</a>
-                        {% else %}
-                            <a href="{{ item.url }}">{{ item.source }}</a>
-                        {% endif %}
-*/
-  if (item.source && item.source_url) {
-    
-  }
-}
+import {MaybeLink} from "./util";
 
 
 class StatsCard extends Component {
@@ -56,31 +39,29 @@ class StatsCard extends Component {
 
   getCardContents() {
     if (this.state.dataLoaded) {
-      return <>
+      return (
         <p className="card-text">Tracking <strong>{this.state.activeData.itemCount}</strong> items in <strong>{this.state.activeData.containerCount}</strong> containers</p>
-      </>
+      );
     } else {
-      return <>
+      return (
         <div className="d-flex justify-content-center">
           <div className="spinner-border text-primary m-5" role="status">
             <span className="sr-only">Loading...</span>
           </div>
         </div>
-      </>
+      );
     }
   }
 
   render() {
     return (
-      <div className="card-columns">
-        <div className="card">
-          <div className="card-body">
-            <h5 className="card-title">Stats</h5>
-            {this.getCardContents()}
-          </div>
+      <div className="card">
+        <div className="card-body">
+          <h5 className="card-title">Stats</h5>
+          {this.getCardContents()}
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -99,9 +80,8 @@ class RestockCard extends Component {
 
   refresh() {
     this.setUnloadedState();
-    axios.get('/api/items', {'needs_restock': true})
+    axios.get('/api/items', {params: {needs_restock: true}})
       .then(res => {
-        console.log(res.data)
         this.setState({
           dataLoaded: true,
           items: res.data
@@ -119,7 +99,7 @@ class RestockCard extends Component {
         <tr key="{item.id}">
           <td>{item.name}</td>
           <td><span className="font-weight-bold text-danger">{item.quantity}</span> (≤{item.alert_quantity})</td>
-          <td>{item.source}</td>
+          <td><MaybeLink url={item.source_url}/>{item.source}</td>
         </tr>
       );
 
@@ -136,13 +116,13 @@ class RestockCard extends Component {
         </tbody>
       </table>
     } else {
-      return <>
+      return (
         <div className="d-flex justify-content-center">
           <div className="spinner-border text-primary m-5" role="status">
             <span className="sr-only">Loading...</span>
           </div>
         </div>
-      </>
+      );
     }
   }
 
@@ -163,9 +143,13 @@ function Dashboard(props) {
   return (
     <div className="container">
       <h1>Dashboard</h1>
-      <div className="card-columns">
-        <StatsCard />
-        <RestockCard />
+      <div className="row">
+        <div className="col">
+          <StatsCard />
+        </div>
+        <div className="col">
+          <RestockCard />
+        </div>
       </div>
     </div>
   )
