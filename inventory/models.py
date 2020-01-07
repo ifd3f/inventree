@@ -20,7 +20,7 @@ class Node(models.Model):
     image = models.ImageField(upload_to='container/', null=True)
 
     parent = models.ForeignKey('Container', on_delete=models.SET_NULL, blank=True, null=True)
-    location_metadata = JSONField(default={})
+    location_metadata = JSONField(default={}, blank=True)
 
     class Meta:
         abstract = True
