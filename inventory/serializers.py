@@ -6,16 +6,17 @@ from inventory.models import Item, Container, ItemTag
 
 
 class JSONFieldSerializerField(serializers.Field):
+
     def to_internal_value(self, data):
         return json.loads(data)
 
     def to_representation(self, value):
-        return value
+        return json.dumps(value)
 
 
 class ContainerSerializer(serializers.ModelSerializer):
     metadata = JSONFieldSerializerField()
-    location_metadata = JSONFieldSerializerField()
+    location_metadata = JSONFieldSerializerField(default={})
 
     class Meta:
         model = Container
