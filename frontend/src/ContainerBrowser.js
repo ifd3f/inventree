@@ -12,9 +12,9 @@ import {
 } from "react-router-dom";
 
 
-const NODE_COLLAPSED = 0
-const NODE_LOADING = 1
-const NODE_EXPANDED = 2
+const NODE_COLLAPSED = 0;
+const NODE_LOADING = 1;
+const NODE_EXPANDED = 2;
 
 
 class Node extends Component {
@@ -58,7 +58,7 @@ class Node extends Component {
       case NODE_LOADING:
         return <div className="spinner-border text-primary" role="status">
           <span className="sr-only">Loading...</span>
-        </div>
+        </div>;
       case NODE_EXPANDED:
         return <span role="button" onClick={this.handleCollapse}><ChevronBottomIcon /></span>
       default:
@@ -140,10 +140,9 @@ class ContainerHiearchyBrowser extends Component {
 class ContainerBrowser extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       selectedContainer: null
-    }
+    };
 
     this.onSelectContainer = this.onSelectContainer.bind(this);
   }
