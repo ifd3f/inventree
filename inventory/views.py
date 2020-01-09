@@ -29,8 +29,14 @@ class ItemViewSet(ModelViewSet):
         return query
 
     def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+        tag_names = request.data.get('tags', [])
+        for tag_name in tag_names:
+            ItemTag.objects.get_or_create(name=tag_name)
 
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 class ContainerViewSet(ModelViewSet):
     serializer_class = ContainerSerializer
