@@ -1,10 +1,9 @@
 from django.conf.urls import url
 from django.urls import include
 from rest_framework import routers
-
-from inventory.views import ItemViewSet, ContainerViewSet, ItemTagViewSet, InfoView, AllParentsView
 from rest_framework.authtoken import views as authtokenviews
 
+from inventory.views import ItemViewSet, ContainerViewSet, ItemTagViewSet, InfoView
 
 router = routers.DefaultRouter()
 router.register(r'items', ItemViewSet, basename='item')

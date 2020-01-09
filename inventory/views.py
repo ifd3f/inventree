@@ -1,5 +1,6 @@
 from django.db.models import F, Sum
 from rest_framework.decorators import action
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -10,6 +11,7 @@ from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSe
 
 class ItemViewSet(ModelViewSet):
     serializer_class = ItemSerializer
+    parser_classes = [JSONParser]
 
     def get_queryset(self):
         query = Item.objects.all()
@@ -32,6 +34,7 @@ class ItemViewSet(ModelViewSet):
 
 class ContainerViewSet(ModelViewSet):
     serializer_class = ContainerSerializer
+    parser_classes = [JSONParser]
 
     def get_queryset(self):
         query = Container.objects.all()
