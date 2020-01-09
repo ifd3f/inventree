@@ -1,7 +1,5 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import m2m_changed
-from django.dispatch import receiver
 from jsonfield import JSONField
 
 
@@ -90,3 +88,21 @@ class Item(Node):
 
     def __repr__(self):
         return f'Item#{self.id}({self.name})'
+
+
+class ItemAttributeStr(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    attribute = models.CharField(max_length=30)
+    value = models.TextField()
+
+    class Meta:
+        index_together = [('item', 'attribute')]
+
+
+class ItemAttributeNum(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    attribute = models.CharField(max_length=30)
+    value = models.FloatField()
+
+    class Meta:
+        index_together = [('item', 'attribute')]
