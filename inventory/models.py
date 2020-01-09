@@ -90,11 +90,3 @@ class Item(Node):
 
     def __repr__(self):
         return f'Item#{self.id}({self.name})'
-
-
-@receiver(m2m_changed, sender=Item.tags.through)
-def video_category_changed(sender, **kwargs):
-    action = kwargs.pop('action', None)
-    pk_set = kwargs.pop('pk_set', None)
-    if action == "pre_add":
-        print(pk_set)
