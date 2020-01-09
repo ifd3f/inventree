@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
 from jsonfield import JSONField
 
@@ -73,8 +74,9 @@ class ItemTag(models.Model):
 
 
 class Item(Node):
-    quantity = models.IntegerField('quantity', default=0)
-    alert_quantity = models.IntegerField('alert quantity', default=0)
+    name = models.CharField(max_length=100)
+    quantity = models.IntegerField('quantity', default=0, validators=[MinValueValidator(0)])
+    alert_quantity = models.IntegerField('alert quantity', default=0, validators=[MinValueValidator(0)])
     source = models.CharField(verbose_name='source', max_length=200, blank=True, default='')
     source_url = models.URLField(verbose_name='source URL', blank=True, null=True)
     tags = models.ManyToManyField(ItemTag)
@@ -106,3 +108,16 @@ class ItemAttributeNum(models.Model):
 
     class Meta:
         index_together = [('item', 'attribute')]
+
+
+class Project(models.Model):
+    name = models.CharField(max_length=100)
+    used_items = models.ManyToManyField(Item, through='ItemUsage')
+
+
+class ItemUsage(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(validators=[MinValueValidator(0)])
+    is_reusable = models.BooleanField()
+    notes = models.TextField()
