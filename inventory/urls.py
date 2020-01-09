@@ -4,6 +4,8 @@ from rest_framework import routers
 
 from inventory.views import ItemViewSet, ContainerViewSet, ItemTagViewSet, InfoView, AllParentsView
 from rest_framework.authtoken import views as authtokenviews
+
+
 router = routers.DefaultRouter()
 router.register(r'items', ItemViewSet, basename='item')
 router.register(r'containers', ContainerViewSet, basename='container')
