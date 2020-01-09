@@ -26,6 +26,9 @@ class ItemViewSet(ModelViewSet):
                 query = query.filter(parent__exact=parent)
         return query
 
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
 
 class ContainerViewSet(ModelViewSet):
     serializer_class = ContainerSerializer
