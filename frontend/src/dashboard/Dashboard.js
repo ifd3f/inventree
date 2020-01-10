@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from "axios";
-import {MaybeLink} from "./util";
+import {MaybeLink} from "../util";
 
 
 class StatsCard extends Component {

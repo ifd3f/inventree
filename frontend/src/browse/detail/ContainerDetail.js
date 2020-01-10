@@ -1,8 +1,8 @@
 import React, {Component} from "react";
-import {MaybeNotProvided} from "../util.js"
+import {MaybeNotProvided} from "../../util.js"
 import axios from "axios";
 import {useParams} from "react-router-dom";
-import {FetchedContents} from "../container/Fetcher";
+import {FetchedContents} from "./container/Fetcher";
 import Button from "react-bootstrap/Button";
 import {createItemEditorModal, ItemEditorModal} from "./ItemEditor";
 
