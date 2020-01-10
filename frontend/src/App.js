@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
-import Navbar from "./Navbar.js";
-import Dashboard from "./Dashboard.js"
-import ContainerBrowser from "./ContainerBrowser"
+import Navbar from "./navbar/Navbar.js";
+import Dashboard from "./dashboard/Dashboard.js"
+import ContainerBrowser from "./browse/ContainerBrowser"
 import {
   BrowserRouter as Router,
   Switch,
