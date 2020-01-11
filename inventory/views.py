@@ -1,15 +1,17 @@
+from django.contrib.auth.models import User
 from django.db.models import F, Sum
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.parsers import JSONParser
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from inventory.models import Item, Container, ItemTag
-from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSerializer, LoginFormSerializer
+from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSerializer, LoginFormSerializer, \
+    UserSerializer
 
 
 class LoginAPIView(APIView):
@@ -97,6 +99,20 @@ class ContainerViewSet(ModelViewSet):
     def children(self, request, pk):
         containers = Container.objects.filter(parent__exact=pk)
         serializer = ContainerSerializer(containers, many=True, context={'request': request})
+        return Response(serializer.data)
+
+
+class UserViewSet(ModelViewSet):
+    serializer_class = UserSerializer
+    parser_classes = [JSONParser]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return User.objects.all()
+
+    @action(methods=['get'], detail=False)
+    def current(self, request):
+        serializer = UserSerializer(request.user, context={'request': request})
         return Response(serializer.data)
 
 

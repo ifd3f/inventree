@@ -28,7 +28,7 @@ export function LoginModal(props) {
             .then(res => {
                 return axios({
                     method: 'post',
-                    url: "/auth/rest-auth/login/",
+                    url: "/auth/rest-auth/auth/",
                     data: {
                         username: username,
                         password: password,
