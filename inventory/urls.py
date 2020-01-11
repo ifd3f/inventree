@@ -14,5 +14,5 @@ router.register(r'users', UserViewSet, basename='users')
 urlpatterns = [
     url(r'^info$', InfoView.as_view()),
     url(r'^', include(router.urls)),
-    url(r'^auth-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
