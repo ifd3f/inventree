@@ -96,7 +96,7 @@ class RestockCard extends Component {
   getCardContents() {
     if (this.state.dataLoaded) {
       let rows = this.state.items.map(item => 
-        <tr key="{item.id}">
+        <tr key={item.id}>
           <td>{item.name}</td>
           <td><span className="font-weight-bold text-danger">{item.quantity}</span> (≤{item.alert_quantity})</td>
           <td><MaybeLink url={item.source_url}/>{item.source}</td>
