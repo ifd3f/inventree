@@ -1,16 +1,17 @@
 import React, {useState} from 'react';
-import {Form, Modal, Button} from "react-bootstrap";
+import {Form, Modal, Button, Dropdown} from "react-bootstrap";
 import {useCookies} from "react-cookie";
 import axios from "axios";
 import {BrowserRouter as Router} from "react-router-dom";
 import DjangoCSRFToken from 'django-react-csrftoken'
+import DropdownMenu from "react-bootstrap/DropdownMenu";
 
 export function LoginModal(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const show = props.show;
     const setShow = props.setShow;
-    const [loginToken, setLoginToken, removeLoginToken] = useCookies(['login-token']);
+    const [cookies, setCookie, removeCookie] = useCookies(['loginToken']);
 
     const handleClose = () => {
         setShow(false);
@@ -40,11 +41,11 @@ export function LoginModal(props) {
                 })
             })
             .then(res => {
-                setLoginToken('login-token', res.data.key);
+                setCookie('loginToken', res.data.key);
                 setShow(false);
             }).catch(err => {
-                console.error(err);
-            });
+            console.error(err);
+        });
     };
 
     return <Modal show={show} onHide={handleClose}>
@@ -72,16 +73,38 @@ export function LoginModal(props) {
     </Modal>
 }
 
-export function NavbarUser(props) {
-    const [show, setShow] = useState(false);
-    const [token, setToken, removeToken] = useCookies(['login-token']);
+function NavbarLoggedInUser(props) {
+    const [cookies, setCookie, removeCookie] = useCookies(['loginToken']);
 
-    const handleBtnLogin = () => {
+    return <Dropdown>
+        <Dropdown.Toggle variant="success" id="dropdown-basic">
+            Dropdown Button
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu>
+            <Dropdown.Item onClick={() => removeCookie('loginToken')}>Logout</Dropdown.Item>
+        </Dropdown.Menu>
+    </Dropdown>
+}
+
+function UserDropdownOrLogin(props) {
+    if (props.token) {
+        return <NavbarLoggedInUser/>
+    } else {
+        return <Button onClick={props.handleClickLogin}>Login</Button>
+    }
+}
+
+export function NavbarUserInfo(props) {
+    const [show, setShow] = useState(false);
+    const [cookies] = useCookies(['loginToken']);
+
+    const handleClickLogin = () => {
         setShow(true);
     };
 
     return <>
-        <Button onClick={handleBtnLogin}>Login</Button>
+        <UserDropdownOrLogin token={cookies.loginToken} handleClickLogin={handleClickLogin} />
         <LoginModal show={show} setShow={setShow}/>
     </>
 

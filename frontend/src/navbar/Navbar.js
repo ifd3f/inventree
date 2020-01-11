@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 
 import Button from "react-bootstrap/Button";
-import {LoginModal, NavbarUser} from "./Login";
+import {LoginModal, NavbarUserInfo} from "./Login";
 
 function MiniSearch(props) {
     return (
@@ -35,7 +35,7 @@ function Navbar(props) {
                     <MiniSearch />
                 </li>
                 <li className="nav-item">
-                    <NavbarUser />
+                    <NavbarUserInfo />
                 </li>
             </ul>
         </header>
