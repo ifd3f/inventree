@@ -76,7 +76,7 @@ function ContainerInfoCard(props) {
     let container = props.container;
     let imageSection = null;
     if (container.image) {
-        imageSection = <img class="card-img" src={container.image} alt={"Image of " + container.name}/>
+        imageSection = <img className="card-img" src={container.image} alt={"Image of " + container.name}/>
     }
 
     return (

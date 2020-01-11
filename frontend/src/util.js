@@ -22,7 +22,7 @@ export function MaybeLink(props) {
     if (props.url) {
       return <a href={props.url}><span style={urlOnlyStyle}>props.url</span></a>;
     } else {
-      return <span class="text-muted">No source provided.</span>;
+      return <span className="text-muted">No source provided.</span>;
     }
   }
 }

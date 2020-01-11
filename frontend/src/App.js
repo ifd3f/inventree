@@ -9,9 +9,12 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import {CookiesProvider} from "react-cookie";
+
 
 function App() {
   return <Router>
+    <CookiesProvider />
     <Navbar />
     <Switch>
       <Route path="/about"></Route>
