@@ -10,7 +10,7 @@ export function LoginModal(props) {
     const [password, setPassword] = useState('');
     const show = props.show;
     const setShow = props.setShow;
-    const [token, setToken, removeToken] = useCookies(['login-token']);
+    const [loginToken, setLoginToken, removeLoginToken] = useCookies(['login-token']);
 
     const handleClose = () => {
         setShow(false);
@@ -27,7 +27,7 @@ export function LoginModal(props) {
             .then(res => {
                 return axios({
                     method: 'post',
-                    url: "/api/rest-auth/login/",
+                    url: "/auth/rest-auth/login/",
                     data: {
                         username: username,
                         password: password,
@@ -40,7 +40,8 @@ export function LoginModal(props) {
                 })
             })
             .then(res => {
-                setToken(res.data.token);
+                setLoginToken(res.data.token);
+                console.log(res.data.token);
                 setShow(false);
             }).catch(err => {
                 console.error(err.response);

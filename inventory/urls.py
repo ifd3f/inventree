@@ -14,5 +14,4 @@ urlpatterns = [
     url(r'^info$', InfoView.as_view()),
     url(r'^', include(router.urls)),
     url(r'^login-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^rest-auth/', include('rest_auth.urls')),
 ]
