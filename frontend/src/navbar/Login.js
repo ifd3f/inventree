@@ -40,11 +40,10 @@ export function LoginModal(props) {
                 })
             })
             .then(res => {
-                setLoginToken(res.data.token);
-                console.log(res.data.token);
+                setLoginToken('login-token', res.data.key);
                 setShow(false);
             }).catch(err => {
-                console.error(err.response);
+                console.error(err);
             });
     };
 
