@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from rest_framework import serializers, validators
 from rest_framework.fields import ListField
 from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField, SlugRelatedField
@@ -74,3 +75,9 @@ class LoginFormSerializer(serializers.Serializer):
             'username': user.username,
             'token': user.token
         }
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username']
