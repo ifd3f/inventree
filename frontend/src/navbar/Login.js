@@ -1,17 +1,19 @@
 import React, {useState} from 'react';
-import {Form, Modal, Button, Dropdown} from "react-bootstrap";
+import {Form, Modal, Button, Dropdown, Spinner} from "react-bootstrap";
 import {useCookies} from "react-cookie";
 import axios from "axios";
 import {BrowserRouter as Router} from "react-router-dom";
 import DjangoCSRFToken from 'django-react-csrftoken'
 import DropdownMenu from "react-bootstrap/DropdownMenu";
+import {useLoginContext} from "../auth";
 
 export function LoginModal(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const show = props.show;
     const setShow = props.setShow;
-    const [cookies, setCookie, removeCookie] = useCookies(['loginToken']);
+
+    const {login} = useLoginContext();
 
     const handleClose = () => {
         setShow(false);
@@ -24,28 +26,10 @@ export function LoginModal(props) {
     };
 
     const handleLogin = () => {
-        axios.get("/auth/csrf")
-            .then(res => {
-                return axios({
-                    method: 'post',
-                    url: "/auth/rest-auth/auth/",
-                    data: {
-                        username: username,
-                        password: password,
-                    },
-                    headers: {
-                        'X-CSRFToken': res.data.csrfToken
-                    },
-                    xsrfHeaderName: "X-CSRFToken",
-                    csrfCookieName: res.data.csrfToken
-                })
-            })
-            .then(res => {
-                setCookie('loginToken', res.data.key);
+        login(username, password)
+            .then(() => {
                 setShow(false);
-            }).catch(err => {
-            console.error(err);
-        });
+            });
     };
 
     return <Modal show={show} onHide={handleClose}>
@@ -74,15 +58,24 @@ export function LoginModal(props) {
 }
 
 function NavbarLoggedInUser(props) {
-    const [cookies, setCookie, removeCookie] = useCookies(['loginToken']);
+    const {userData, logout} = useLoginContext();
 
+    const handleClickedLogout = () => {
+        logout().catch(err => {
+            console.log(err)
+        })
+    };
+
+    if (!userData) {
+        return <Spinner animation="border"/>
+    }
     return <Dropdown>
         <Dropdown.Toggle variant="success" id="dropdown-basic">
-            Dropdown Button
+            {userData.username}
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-            <Dropdown.Item onClick={() => removeCookie('loginToken')}>Logout</Dropdown.Item>
+            <Dropdown.Item onClick={handleClickedLogout}>Logout</Dropdown.Item>
         </Dropdown.Menu>
     </Dropdown>
 }

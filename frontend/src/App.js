@@ -10,21 +10,24 @@ import {
     Link
 } from "react-router-dom";
 import {CookiesProvider} from "react-cookie";
+import {LoginProvider} from "./auth";
 
 
 function App() {
     return <Router>
         <CookiesProvider>
-            <Navbar/>
-            <Switch>
-                <Route path="/about"></Route>
-                <Route path="/browse">
-                    <ContainerBrowser/>
-                </Route>
-                <Route exact path="/">
-                    <Dashboard/>
-                </Route>
-            </Switch>
+            <LoginProvider>
+                <Navbar/>
+                <Switch>
+                    <Route path="/about"></Route>
+                    <Route path="/browse">
+                        <ContainerBrowser/>
+                    </Route>
+                    <Route exact path="/">
+                        <Dashboard/>
+                    </Route>
+                </Switch>
+            </LoginProvider>
         </CookiesProvider>
     </Router>;
 }
