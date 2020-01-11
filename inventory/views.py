@@ -71,7 +71,7 @@ class ContainerViewSet(ModelViewSet):
 
         parent = self.request.query_params.get('parent', None)
         if parent:
-            if parent == '-1':
+            if parent == '0':
                 query = query.filter(parent__isnull=True)
             else:
                 query = query.filter(parent__exact=parent)
