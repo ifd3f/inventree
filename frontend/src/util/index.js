@@ -1,15 +1,25 @@
 import React, {Component} from "react";
 
-export function HoverReceiver(props) {
+export function Wrapper(props) {
+    return props.children;
+}
+
+export function HoverArea(props) {
     const setHover = props.setHover;
-    return <Component onMouseEnter={() => setHover(true)} onMouseExit={() => setHover(false)}>
+    const handleMouseEnter = () => {
+        setHover(true);
+    };
+    const handleMouseLeave = () => {
+        setHover(false);
+    };
+    return <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         {props.children}
-    </Component>
+    </div>
 }
 
 export function Reveal(props) {
-    const hover = props.hover;
-    if (hover) {
+    const show = props.show;
+    if (show) {
         return props.children;
     } else {
         return <></>;
