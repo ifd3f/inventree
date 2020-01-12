@@ -1,75 +1,9 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import {MaybeNotProvided} from "../../util.js"
 import axios from "axios";
-import {useParams} from "react-router-dom";
-import {FetchedContents} from "./container/Fetcher";
+import {Contents} from "./container/Contents";
 import Button from "react-bootstrap/Button";
-import {createItemEditorModal, ItemEditorModal} from "./ItemEditor";
-
-
-export function RoutedContainerDetail(props) {
-    let {containerId} = useParams();
-    return <DynamicallyLoadedContainerDetail id={containerId}/>
-}
-
-
-export class DynamicallyLoadedContainerDetail extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            id: props.id,
-            loaded: false,
-            container: null
-        }
-    }
-
-    componentDidMount() {
-        this.fetchData();
-    }
-
-    static getDerivedStateFromProps(props, prevState) {
-        if (!prevState || props.id !== prevState.id) {
-            return {
-                id: props.id,
-                loaded: false,
-                container: null
-            }
-        }
-        return null;
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.id && !this.state.loaded) {
-            this.fetchData();
-        }
-    }
-
-    fetchData() {
-        if (!this.state.id) {
-            this.setState({
-                loaded: true,
-                container: null
-            });
-            return;
-        }
-
-        axios.get(`/api/containers/${this.state.id}`)
-            .then(res => {
-                this.setState({
-                    loaded: true,
-                    container: res.data
-                })
-            })
-    }
-
-    render() {
-        if (this.state.loaded) {
-            return <ContainerDetail container={this.state.container}/>
-        } else {
-            return null;
-        }
-    }
-}
+import {Spinner} from "react-bootstrap";
 
 
 function ContainerInfoCard(props) {
@@ -103,99 +37,92 @@ function ContainerInfoCard(props) {
 }
 
 
-const SHOW_NO_MODAL = 0;
-const SHOW_ITEM_MODAL = 1;
-const SHOW_CONTAINER_MODAL = 2;
+export function ContainerDetail(props) {
+    const container = props.container;
+    const contents = props.contents;
+    const [showItemModal, setShowItemModal] = useState(false);
 
-export class ContainerDetail extends Component {
-
-    state = {
-        containersFetched: false,
-        containers: [],
-        itemsFetched: false,
-        items: [],
-        shownModal: SHOW_NO_MODAL
+    const handleAddItem = () => {
+        setShowItemModal(true);
     };
 
-    constructor(props) {
-        super(props);
-        this.showItemEditorModal = this.showItemEditorModal.bind(this);
-        this.hideModal = this.hideModal.bind(this);
-    }
-
-    componentDidMount() {
-        this.loadContainers();
-        this.loadItems();
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!this.state.containersFetched) {
-            this.loadContainers();
-        }
-        if (!this.state.itemsFetched) {
-            this.loadItems();
-        }
-    }
-
-    loadContainers() {
-        axios.get(`/api/containers/${this.props.container.id}/children`)
-            .then(res => {
-                this.setState({
-                    containersFetched: true,
-                    containers: res.data
-                })
-            });
-    }
-
-    loadItems() {
-        axios.get(`/api/containers/${this.props.container.id}/items`)
-            .then(res => {
-                this.setState({
-                    itemsFetched: true,
-                    items: res.data
-                })
-            });
-    }
-
-    showItemEditorModal() {
-        if (this.state.shownModal === SHOW_NO_MODAL) {
-            this.setState({
-                shownModal: SHOW_ITEM_MODAL
-            });
-        }
-    }
-
-    hideModal() {
-        this.setState({
-            shownModal: SHOW_NO_MODAL
-        })
-    }
-
-    render() {
-        let container = this.props.container;
-        if (container == null) {
-            return <div>
-                <h1 className="text-muted">Select a container on the left.</h1>
-            </div>
-        }
-
-        return <>
-            <div>
-                <div className="row flex-xl-nowrap">
-                    <div className="col-sm col-md-3">
-                        <ContainerInfoCard container={container}/>
+    return <>
+        <div>
+            <div className="row flex-xl-nowrap">
+                <div className="col-sm col-md-3">
+                    <h1>{container.name}</h1>
+                </div>
+                <div className="col-md">
+                    <h2>Contents</h2>
+                    <div>
+                        <Button className="mr-1" variant="success">+ Add Container</Button>
+                        <Button variant="success" onClick={handleAddItem}>+ Add Item</Button>
                     </div>
-                    <div className="col-md">
-                        <h2>Contents</h2>
-                        <div>
-                            <Button className="mr-1" variant="success">+ Add Container</Button>
-                            <Button variant="success" onClick={this.showItemEditorModal}>+ Add Item</Button>
-                        </div>
-                        <FetchedContents container={container}/>
-                    </div>
+                    <Contents container={container} contents={contents}/>
                 </div>
             </div>
-            <ItemEditorModal show={this.state.shownModal === SHOW_ITEM_MODAL} handleClose={this.hideModal} container={container}/>
-        </>
+        </div>
+    </>
+
+}
+
+export function RootDetail(props) {
+    return <></>
+}
+
+export function ContainerDetailLoader(props) {
+    const containerID = props.containerID;
+
+    const [loadedID, setLoadedID] = useState(-1);
+    const [container, setContainer] = useState(null);
+    const [contents, setContents] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const reload = () => {
+        setLoading(true);
+
+        const fetchChildren = axios.get('/api/containers/', {
+            params: {
+                parent: containerID
+            }
+        });
+
+        const fetchItems = axios.get('/api/items/', {
+            params: {
+                parent: containerID
+            }
+        });
+
+        const fetchContainer = containerID ?
+            axios.get(`/api/containers/${containerID}`) :
+            Promise.resolve(null);
+
+        Promise.all([fetchContainer, fetchChildren, fetchItems])
+            .then(([container, children, items]) => {
+                console.log(container);
+                setLoading(false);
+                setContents({
+                    containers: children.data,
+                    items: items.data
+                });
+                if (container) {
+                    setContainer(container.data);
+                } else {
+                    setContainer(null);
+                }
+            });
+    };
+
+    if (!loading && loadedID !== containerID) {
+        setLoadedID(containerID);
+        reload();
     }
+
+    if (loading) {
+        return <Spinner animation="grow"/>
+    }
+    if (container) {
+        return <ContainerDetail container={container} contents={contents}/>
+    }
+    return <RootDetail contents={contents}/>
 }
