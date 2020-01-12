@@ -1,5 +1,5 @@
 import Form from "react-bootstrap/Form";
-import React, {Component, useState} from "react";
+import React, {Component, useEffect, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios"
@@ -48,16 +48,26 @@ function ItemEditorForm(props) {
     </Form>;
 }
 
+const INITIAL_FORM_STATE = {
+    name: '',
+    parent: null,
+    quantity: 0
+};
+
 export function ItemEditorModal(props) {
     const show = props.show;
     const setShow = props.setShow;
     const container = props.container;
-    const {token} = useLoginContext();
 
-    const [formData, setFormData] = useState({
-        name: '',
-        parent: container.id,
-        quantity: 0
+    const [formData, setFormData] = useState(INITIAL_FORM_STATE);
+
+    useEffect(() => {
+        if (formData.parent === null) {
+            setFormData(prev => ({
+                ...prev,
+                parent: container.id
+            }));
+        }
     });
 
     const onChange = (ev) => {
@@ -70,6 +80,10 @@ export function ItemEditorModal(props) {
 
     const handleClose = () => {
         setShow(false);
+        setFormData(INITIAL_FORM_STATE);
+        if (props.handleClose) {
+            props.handleClose();
+        }
     };
 
     const handleSave = () => {

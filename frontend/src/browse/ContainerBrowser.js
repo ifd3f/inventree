@@ -1,12 +1,11 @@
-import React, {Component, useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import "./ContainerBrowser.css"
 import {ChevronBottomIcon, ChevronRightIcon} from 'react-open-iconic-svg';
-import {Link, useRouteMatch} from "react-router-dom";
-import {Button, ButtonToolbar, Col, Container, Nav, Navbar, NavItem, Row, Spinner} from "react-bootstrap";
-import {ContainerDetail, ContainerDetailLoader} from "./detail/ContainerDetail";
+import {Link} from "react-router-dom";
+import {Button, ButtonToolbar, Col, Container, Nav, NavItem, Row, Spinner} from "react-bootstrap";
+import {ContainerDetailLoader} from "./detail/ContainerDetail";
 import {useSelectedContainerID} from "./detail/util";
-import {ItemEditorModal} from "./detail/ItemEditor";
 
 
 const NODE_COLLAPSED = 0;
