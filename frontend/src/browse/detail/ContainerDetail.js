@@ -99,7 +99,6 @@ export function ContainerDetailLoader(props) {
 
         Promise.all([fetchContainer, fetchChildren, fetchItems])
             .then(([container, children, items]) => {
-                console.log(container);
                 setLoading(false);
                 setContents({
                     containers: children.data,
