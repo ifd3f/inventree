@@ -79,7 +79,7 @@ class ContainerViewSet(ModelViewSet):
         return query
 
     @action(methods=['get'], detail=True)
-    def all_parents(self, request, pk):
+    def parents(self, request, pk):
         container = Container.objects.get(pk=pk)
         node = container
         path = []
