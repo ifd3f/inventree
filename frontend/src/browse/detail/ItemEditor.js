@@ -1,10 +1,11 @@
 import Form from "react-bootstrap/Form";
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios"
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import {setupCSRFToken, useLoginContext} from "../../auth";
 
 function ItemEditorForm(props) {
     return <Form>
@@ -38,7 +39,7 @@ function ItemEditorForm(props) {
         </Row>
         <Form.Group controlId="image">
             <Form.Label>Image</Form.Label>
-            <input type="file" className="form-control-file" />
+            <input type="file" className="form-control-file"/>
         </Form.Group>
         <Form.Group controlId="description">
             <Form.Label>Description</Form.Label>
@@ -47,64 +48,56 @@ function ItemEditorForm(props) {
     </Form>;
 }
 
-export class ItemEditorModal extends Component {
+export function ItemEditorModal(props) {
+    const show = props.show;
+    const setShow = props.setShow;
+    const container = props.container;
+    const {token} = useLoginContext();
 
-    state = {
-        name: "",
-        description: "",
-        quantity: 0,
-        alert_quantity: 0,
-        image: null
+    const [formData, setFormData] = useState({
+        name: '',
+        parent: container.id,
+        quantity: 0
+    });
+
+    const onChange = (ev) => {
+        const target = ev.target;
+        setFormData(prev => ({
+            ...prev,
+            [target.id]: target.value
+        }));
     };
 
-    constructor(props) {
-        super(props);
-        this.handleClose = this.handleClose.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.onChange = this.onChange.bind(this);
-    }
+    const handleClose = () => {
+        setShow(false);
+    };
 
-    onChange(ev) {
-        this.setState({
-            [ev.target.id]: ev.target.value
-        });
-    }
+    const handleSave = () => {
+        setupCSRFToken()
+            .then(() =>
+                axios.post(`/api/items/`, formData)
+            )
+            .then(res => {
+                handleClose();
+            })
+    };
 
-    handleClose() {
-        this.props.handleClose();
-    }
-
-    handleSave() {
-        axios.post(`/api/items/`, {
-            name: this.state.name,
-            description: this.state.description,
-            quantity: this.state.quantity,
-            alert_quantity: this.state.alert_quantity,
-            image: this.state.image
-        }).then(res => {
-            console.log(res);
-            this.handleClose();
-        })
-    }
-
-    render() {
-        return (
-            <Modal show={this.props.show} onHide={this.handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Create new item</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <ItemEditorForm onChange={this.onChange} container={this.props.container}/>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={this.handleClose}>
-                        Cancel
-                    </Button>
-                    <Button variant="primary" onClick={this.handleSave}>
-                        Save
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        );
-    }
+    return (
+        <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Create new item</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <ItemEditorForm onChange={onChange} container={container}/>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Cancel
+                </Button>
+                <Button variant="primary" onClick={handleSave}>
+                    Save
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
 }

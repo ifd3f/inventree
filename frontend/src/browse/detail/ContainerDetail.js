@@ -4,6 +4,7 @@ import axios from "axios";
 import {Contents} from "./container/Contents";
 import Button from "react-bootstrap/Button";
 import {Spinner} from "react-bootstrap";
+import {ItemEditorModal} from "./ItemEditor";
 
 
 function ContainerInfoCard(props) {
@@ -62,6 +63,7 @@ export function ContainerDetail(props) {
                 </div>
             </div>
         </div>
+        <ItemEditorModal container={container} show={showItemModal} setShow={setShowItemModal}/>
     </>
 
 }

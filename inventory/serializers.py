@@ -42,7 +42,7 @@ class SimplifiedItemTagSerializer(serializers.ModelSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
     location_metadata = JSONFieldSerializerField(default={})
-    tags = serializers.SlugRelatedField(many=True, slug_field='name', queryset=ItemTag.objects.all())
+    tags = serializers.SlugRelatedField(many=True, slug_field='name', queryset=ItemTag.objects.all(), default=[])
 
     class Meta:
         model = Item

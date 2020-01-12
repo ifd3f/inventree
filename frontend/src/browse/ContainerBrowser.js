@@ -6,6 +6,7 @@ import {Link, useRouteMatch} from "react-router-dom";
 import {Button, ButtonToolbar, Col, Container, Nav, Navbar, NavItem, Row, Spinner} from "react-bootstrap";
 import {ContainerDetail, ContainerDetailLoader} from "./detail/ContainerDetail";
 import {useSelectedContainerID} from "./detail/util";
+import {ItemEditorModal} from "./detail/ItemEditor";
 
 
 const NODE_COLLAPSED = 0;
@@ -167,9 +168,10 @@ function HierarchyBrowser(props) {
 
 function ContainerBrowser(props) {
     const selectedContainerID = useSelectedContainerID();
+
     return <Container fluid={true}>
         <Row>
-            <Col lg={2}>
+            <Col md={3}>
                 <ButtonToolbar>
                     <Button variant="info" size="sm">+ Add Container</Button>
                     <Button variant="info" size="sm">+ Add Item</Button>
@@ -177,7 +179,7 @@ function ContainerBrowser(props) {
                 <HierarchyBrowser selectedContainerID={selectedContainerID}/>
             </Col>
             <Col>
-                <ContainerDetailLoader selectedContainerID={selectedContainerID}/>
+                <ContainerDetailLoader containerID={selectedContainerID}/>
             </Col>
         </Row>
     </Container>
