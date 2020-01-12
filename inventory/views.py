@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models import F, Sum
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.mixins import UpdateModelMixin, CreateModelMixin
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.renderers import JSONRenderer
@@ -35,6 +36,7 @@ class LoginAPIView(APIView):
 class ItemViewSet(ModelViewSet):
     serializer_class = ItemSerializer
     parser_classes = [JSONParser]
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
     def get_queryset(self):
         query = Item.objects.all()
@@ -51,15 +53,23 @@ class ItemViewSet(ModelViewSet):
                 query = query.filter(parent__exact=parent)
         return query
 
-    def create(self, request, *args, **kwargs):
+    @staticmethod
+    def ensure_tags(request):
         tag_names = request.data.get('tags', [])
         for tag_name in tag_names:
             ItemTag.objects.get_or_create(name=tag_name)
 
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+    def update(self, request, *args, **kwargs):
+        self.ensure_tags(request)
+        super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        self.ensure_tags(request)
+        super().partial_update(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        self.ensure_tags(request)
+        super().create(request, *args, **kwargs)
 
 
 class ContainerViewSet(ModelViewSet):
