@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {MaybeNotProvided} from "../../util"
+import {HoverArea, MaybeNotProvided, Reveal} from "../../util"
 import axios from "axios";
 import {Contents} from "./container/Contents";
 import Button from "react-bootstrap/Button";
-import {Spinner} from "react-bootstrap";
+import {Col, Image, Row, Spinner} from "react-bootstrap";
 import {ItemEditorModal} from "./ItemEditor";
+import {PencilIcon} from "react-open-iconic-svg";
 
 
 function ContainerInfoCard(props) {
@@ -41,7 +42,8 @@ function ContainerInfoCard(props) {
 export function ContainerDetail(props) {
     const container = props.container;
     const contents = props.contents;
-    const setDirty = props.setDirty ? props.setDirty : () => {};
+    const setDirty = props.setDirty ? props.setDirty : () => {
+    };
     const [showItemModal, setShowItemModal] = useState(false);
 
     const handleAddItem = () => {
@@ -49,15 +51,33 @@ export function ContainerDetail(props) {
     };
 
     const handleCloseModal = () => {
-        console.log("asdf")
         setDirty(true);
     };
+
+    const [revealEditDescription, setRevealEditDescription] = useState(false);
 
     return <>
         <div>
             <div className="row flex-xl-nowrap">
                 <div className="col-sm col-md-3">
-                    <h1>{container.name}</h1>
+                    <h2>{container.name}</h2>
+                    {
+                        container.image ? <Image src={container.image} fluid thumbnail/> : null
+                    }
+                    <HoverArea setHover={setRevealEditDescription}>
+                        <Row>
+                            <Col>
+                                <h4>Description</h4>
+                            </Col>
+                            <Col md="auto"/>
+                            <Col>
+                                <Reveal show={revealEditDescription}>
+                                    <Button variant="none" size="sm"><PencilIcon/></Button>
+                                </Reveal>
+                            </Col>
+                        </Row>
+                        <p>{container.description}</p>
+                    </HoverArea>
                 </div>
                 <div className="col-md">
                     <h2>Contents</h2>
@@ -69,7 +89,8 @@ export function ContainerDetail(props) {
                 </div>
             </div>
         </div>
-        <ItemEditorModal container={container} show={showItemModal} setShow={setShowItemModal} handleClose={handleCloseModal}/>
+        <ItemEditorModal container={container} show={showItemModal} setShow={setShowItemModal}
+                         handleClose={handleCloseModal}/>
     </>
 
 }
