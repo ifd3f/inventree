@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {MaybeNotProvided} from "../../util.js"
+import {MaybeNotProvided} from "../../util"
 import axios from "axios";
 import {Contents} from "./container/Contents";
 import Button from "react-bootstrap/Button";
