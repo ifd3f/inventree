@@ -18,7 +18,7 @@ CONTAINER_TYPE_CHOICES = [
 class Node(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='container/', null=True)
+    image = models.ImageField(upload_to='container/', blank=True, null=True)
 
     parent = models.ForeignKey('Container', on_delete=models.SET_NULL, blank=True, null=True)
     location_metadata = JSONField(default={}, blank=True)
@@ -76,7 +76,7 @@ class ItemTag(models.Model):
 class Item(Node):
     name = models.CharField(max_length=100)
     quantity = models.IntegerField('quantity', default=0, validators=[MinValueValidator(0)])
-    alert_quantity = models.IntegerField('alert quantity', default=0, validators=[MinValueValidator(0)])
+    alert_quantity = models.IntegerField('alert quantity', default=0, validators=[MinValueValidator(-1)])
     source = models.CharField(verbose_name='source', max_length=200, blank=True, default='')
     source_url = models.URLField(verbose_name='source URL', blank=True, null=True)
     tags = models.ManyToManyField(ItemTag)
