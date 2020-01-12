@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {MaybeNotProvided} from "../../util.js"
 import axios from "axios";
 import {Contents} from "./container/Contents";
@@ -41,10 +41,16 @@ function ContainerInfoCard(props) {
 export function ContainerDetail(props) {
     const container = props.container;
     const contents = props.contents;
+    const setDirty = props.setDirty ? props.setDirty : () => {};
     const [showItemModal, setShowItemModal] = useState(false);
 
     const handleAddItem = () => {
         setShowItemModal(true);
+    };
+
+    const handleCloseModal = () => {
+        console.log("asdf")
+        setDirty(true);
     };
 
     return <>
@@ -63,7 +69,7 @@ export function ContainerDetail(props) {
                 </div>
             </div>
         </div>
-        <ItemEditorModal container={container} show={showItemModal} setShow={setShowItemModal}/>
+        <ItemEditorModal container={container} show={showItemModal} setShow={setShowItemModal} handleClose={handleCloseModal}/>
     </>
 
 }
@@ -79,6 +85,7 @@ export function ContainerDetailLoader(props) {
     const [container, setContainer] = useState(null);
     const [contents, setContents] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [dirty, setDirty] = useState(true);
 
     const reload = () => {
         setLoading(true);
@@ -111,19 +118,28 @@ export function ContainerDetailLoader(props) {
                 } else {
                     setContainer(null);
                 }
+                setDirty(false);
             });
     };
 
-    if (!loading && loadedID !== containerID) {
-        setLoadedID(containerID);
-        reload();
-    }
+    useEffect(() => {
+        if (loadedID !== containerID) {
+            setDirty(true);
+        }
+    });
+
+    useEffect(() => {
+        if (dirty && !loading) {
+            setLoadedID(containerID);
+            reload();
+        }
+    });
 
     if (loading) {
         return <Spinner animation="grow"/>
     }
     if (container) {
-        return <ContainerDetail container={container} contents={contents}/>
+        return <ContainerDetail container={container} contents={contents} setDirty={setDirty}/>
     }
     return <RootDetail contents={contents}/>
 }
