@@ -9,6 +9,17 @@ export function useLoginContext() {
     return useContext(LoginContext);
 }
 
+export function setupCSRFToken() {
+    return axios.get('/auth/csrf')
+        .then(res => {
+            axios.defaults.headers = {
+                'X-CSRFToken': res.data.csrfToken
+            };
+            axios.defaults.xsrfHeaderName = "X-CSRFToken";
+            axios.defaults.csrfCookieName = res.data.csrfToken;
+        })
+}
+
 export function LoginProvider(props) {
     const [cookies, setCookie, removeCookie] = useCookies(['loginToken']);
     const [token, setToken] = useState(cookies.loginToken);

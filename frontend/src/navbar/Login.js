@@ -1,10 +1,7 @@
 import React, {useState} from 'react';
-import {Form, Modal, Button, Dropdown, Spinner} from "react-bootstrap";
+import {Button, Dropdown, Form, Modal, Spinner} from "react-bootstrap";
 import {useCookies} from "react-cookie";
-import axios from "axios";
-import {BrowserRouter as Router} from "react-router-dom";
 import DjangoCSRFToken from 'django-react-csrftoken'
-import DropdownMenu from "react-bootstrap/DropdownMenu";
 import {useLoginContext} from "../auth";
 
 export function LoginModal(props) {
@@ -38,7 +35,6 @@ export function LoginModal(props) {
                 <Modal.Title>Create new item</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <DjangoCSRFToken/>
                 <Form.Group controlId="name">
                     <Form.Label>Username</Form.Label>
                     <Form.Control type="text" onChange={handleChangeUsername}/>
@@ -97,7 +93,7 @@ export function NavbarUserInfo(props) {
     };
 
     return <>
-        <UserDropdownOrLogin token={cookies.loginToken} handleClickLogin={handleClickLogin} />
+        <UserDropdownOrLogin token={cookies.loginToken} handleClickLogin={handleClickLogin}/>
         <LoginModal show={show} setShow={setShow}/>
     </>
 
