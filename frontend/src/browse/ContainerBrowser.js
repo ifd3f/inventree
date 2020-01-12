@@ -2,8 +2,9 @@ import React, {Component, useState} from "react";
 import axios from "axios";
 import "./ContainerBrowser.css"
 import {ChevronBottomIcon, ChevronRightIcon} from 'react-open-iconic-svg';
-import {Link} from "react-router-dom";
+import {Link, useRouteMatch} from "react-router-dom";
 import {Button, ButtonToolbar, Col, Container, Nav, Navbar, NavItem, Row, Spinner} from "react-bootstrap";
+import {ContainerDetail, ContainerDetailLoader} from "./detail/ContainerDetail";
 
 
 const NODE_COLLAPSED = 0;
@@ -119,18 +120,23 @@ function HierarchyBrowser(props) {
 }
 
 function ContainerBrowser(props) {
+    const match = useRouteMatch('/browse/:containerID');
+    const containerID = match ? match.params.containerID : 0;
+
     return <ContainerBrowserContext.Provider>
         <Container fluid={true}>
-            <Col>
-                <ButtonToolbar>
-                    <Button variant="info" size="sm">+ Add Container</Button>
-                    <Button variant="info" size="sm">+ Add Item</Button>
-                </ButtonToolbar>
-                <HierarchyBrowser/>
-            </Col>
-            <Col>
-
-            </Col>
+            <Row>
+                <Col lg={2}>
+                    <ButtonToolbar>
+                        <Button variant="info" size="sm">+ Add Container</Button>
+                        <Button variant="info" size="sm">+ Add Item</Button>
+                    </ButtonToolbar>
+                    <HierarchyBrowser/>
+                </Col>
+                <Col>
+                    <ContainerDetailLoader containerID={containerID}/>
+                </Col>
+            </Row>
         </Container>
     </ContainerBrowserContext.Provider>
 }
