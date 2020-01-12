@@ -1,4 +1,4 @@
-import React, {Component, useState} from "react";
+import React, {Component, useContext, useState} from "react";
 import axios from "axios";
 import "./ContainerBrowser.css"
 import {ChevronBottomIcon, ChevronRightIcon} from 'react-open-iconic-svg';
@@ -13,6 +13,7 @@ const NODE_EXPANDED = 2;
 
 const ContainerBrowserContext = React.createContext({
     selected: null,
+    toOpen: new Set(),
 });
 
 function CollapsedLabel(props) {
@@ -35,7 +36,9 @@ function LoadingLabel(props) {
 
 function ExpandedLabel(props) {
     return <Row>
-        <Button variant="light" size="sm" onClick={props.onCollapse}><ChevronBottomIcon/></Button>
+        <Button variant="light" size="sm" onClick={props.onCollapse} disabled={!props.canCollapse}>
+            <ChevronBottomIcon/>
+        </Button>
         <Link to={props.to}>
             <span onClick={props.onExpand}>{props.container.name}</span>
         </Link>
@@ -44,11 +47,16 @@ function ExpandedLabel(props) {
 
 function Subcontainers(props) {
     const children = props.children;
+    const shouldExpand = props.shouldExpand;
+
     if (children.length === 0) {
         return <span className="text-muted font-italic" style={{marginLeft: '1em'}}>No subcontainers.</span>
     }
     return <Nav className="flex-column" style={{marginLeft: '1em'}}>
-        {children.map(child => <Node container={child}/>)}
+        {children.map(child => {
+            const expanded = shouldExpand ? shouldExpand.has(child.id) : false;
+            return <Node container={child} shouldExpand={expanded ? shouldExpand : null} expanded={expanded}/>
+        })}
     </Nav>;
 }
 
@@ -60,8 +68,12 @@ function Node(props) {
             name: <span className="font-weight-bold">/</span>
         }
     }
+    const shouldExpand = props.shouldExpand;
+    const expanded = props.expanded;
+    const canCollapse = !!props.canCollapse;
 
-    const [expandState, setExpandState] = useState(NODE_COLLAPSED);
+    const context = useContext(ContainerBrowserContext);
+    const [expandState, setExpandState] = useState(expanded ? NODE_LOADING : NODE_COLLAPSED);
     const [children, setChildren] = useState([]);
     const [requesting, setRequesting] = useState(false);
 
@@ -88,12 +100,16 @@ function Node(props) {
         }
     };
 
+    const handleExpand = () => {
+        refresh();
+    };
+
     const handleCollapse = () => {
         setExpandState(NODE_COLLAPSED);
     };
 
     if (expandState === NODE_LOADING && !requesting) {
-        refresh();
+        handleExpand();
     }
 
     let linkTo = container.id ? `/browse/${container.id}` : '/browse';
@@ -101,7 +117,7 @@ function Node(props) {
     switch (expandState) {
         case NODE_COLLAPSED:
             return <NavItem key={container.id}>
-                <CollapsedLabel container={container} to={linkTo} onExpand={refresh}/>
+                <CollapsedLabel container={container} to={linkTo} onExpand={handleExpand}/>
             </NavItem>;
         case NODE_LOADING:
             return <NavItem key={container.id}>
@@ -109,20 +125,29 @@ function Node(props) {
             </NavItem>;
         case NODE_EXPANDED:
             return <NavItem key={container.id}>
-                <ExpandedLabel container={container} to={linkTo} onCollapse={handleCollapse}/>
-                <Subcontainers children={children}/>
+                <ExpandedLabel container={container} to={linkTo} onCollapse={handleCollapse} canCollapse={canCollapse}/>
+                <Subcontainers children={children} shouldExpand={shouldExpand}/>
             </NavItem>;
     }
 }
 
 function HierarchyBrowser(props) {
-    return <Node container={null}/>
+    const containerID = props.containerID || 0;
+    const [shouldExpand, setShouldExpand] = useState(null);
+
+    if (containerID) {
+        axios.get(`/api/containers/${containerID}/parents`)
+            .then(res => {
+                setShouldExpand(new Set(res.data.map(parent => parent.id)));
+            });
+    }
+
+    return <Node container={null} shouldExpand={shouldExpand} expanded={true} canCollapse={false}/>
 }
 
 function ContainerBrowser(props) {
     const match = useRouteMatch('/browse/:containerID');
     const containerID = match ? match.params.containerID : 0;
-
     return <ContainerBrowserContext.Provider>
         <Container fluid={true}>
             <Row>
@@ -131,7 +156,7 @@ function ContainerBrowser(props) {
                         <Button variant="info" size="sm">+ Add Container</Button>
                         <Button variant="info" size="sm">+ Add Item</Button>
                     </ButtonToolbar>
-                    <HierarchyBrowser/>
+                    <HierarchyBrowser containerID={containerID}/>
                 </Col>
                 <Col>
                     <ContainerDetailLoader containerID={containerID}/>
