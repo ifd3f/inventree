@@ -65,7 +65,7 @@ function Node(props) {
         }
     }
     const toExpand = props.toExpand;
-    const canCollapse = !!props.canCollapse;
+    const canCollapse = props.canCollapse !== undefined ? props.canCollapse : true;
 
     let initialExpandState = NODE_COLLAPSED;
     if (container.id === 0 || (toExpand && toExpand.has(container.id))) {
