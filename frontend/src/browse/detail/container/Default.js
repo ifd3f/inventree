@@ -25,8 +25,8 @@ export function DefaultContents(props) {
     let contents = props.contents;
     let body;
     if (contents) {
-        let containers = contents.containers.map(container => <ContainerRow container={container}/>);
-        let items = contents.items.map(item => <ItemRow item={item}/>);
+        let containers = contents.containers.map(container => <ContainerRow key={`c${container.id}`} container={container}/>);
+        let items = contents.items.map(item => <ItemRow key={`i${item.id}`} item={item}/>);
         body = [containers, items];
     }
     if (!body) {
