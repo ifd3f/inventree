@@ -3,7 +3,7 @@ import {HoverArea, MaybeNotProvided, Reveal} from "../../util"
 import axios from "axios";
 import {Contents} from "./container/Contents";
 import Button from "react-bootstrap/Button";
-import {Col, Image, Row, Spinner} from "react-bootstrap";
+import {ButtonToolbar, Col, Image, Row, Spinner} from "react-bootstrap";
 import {ItemEditorModal} from "./ItemEditor";
 import {PencilIcon} from "react-open-iconic-svg";
 
@@ -57,38 +57,36 @@ export function ContainerDetail(props) {
     const [revealEditDescription, setRevealEditDescription] = useState(false);
 
     return <>
-        <div>
-            <div className="row flex-xl-nowrap">
-                <div className="col-sm col-md-3">
-                    <h2>{container.name}</h2>
-                    {
-                        container.image ? <Image src={container.image} fluid thumbnail/> : null
-                    }
-                    <HoverArea setHover={setRevealEditDescription}>
-                        <Row>
-                            <Col>
-                                <h4>Description</h4>
-                            </Col>
-                            <Col md="auto"/>
-                            <Col>
-                                <Reveal show={revealEditDescription}>
-                                    <Button variant="none" size="sm"><PencilIcon/></Button>
-                                </Reveal>
-                            </Col>
-                        </Row>
-                        <p>{container.description}</p>
-                    </HoverArea>
-                </div>
-                <div className="col-md">
-                    <h2>Contents</h2>
-                    <div>
-                        <Button className="mr-1" variant="success">+ Add Container</Button>
-                        <Button variant="success" onClick={handleAddItem}>+ Add Item</Button>
-                    </div>
-                    <Contents container={container} contents={contents}/>
-                </div>
-            </div>
-        </div>
+        <Row>
+            <Col lg={4}>
+                <h2>{container.name}</h2>
+                {
+                    container.image ? <Image src={container.image} fluid thumbnail/> : null
+                }
+                <HoverArea setHover={setRevealEditDescription}>
+                    <Row>
+                        <Col>
+                            <h4>Description</h4>
+                        </Col>
+                        <Col md="auto"/>
+                        <Col>
+                            <Reveal show={revealEditDescription}>
+                                <Button variant="none" size="sm"><PencilIcon/></Button>
+                            </Reveal>
+                        </Col>
+                    </Row>
+                    <p>{container.description}</p>
+                </HoverArea>
+            </Col>
+            <Col>
+                <h2>Contents</h2>
+                <ButtonToolbar>
+                    <Button size="sm" className="mr-1" variant="success">+ Add Container</Button>
+                    <Button size="sm" variant="success" onClick={handleAddItem}>+ Add Item</Button>
+                </ButtonToolbar>
+                <Contents container={container} contents={contents}/>
+            </Col>
+        </Row>
         <ItemEditorModal container={container} show={showItemModal} setShow={setShowItemModal}
                          handleClose={handleCloseModal}/>
     </>

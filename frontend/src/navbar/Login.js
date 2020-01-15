@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Dropdown, Form, Modal, Spinner} from "react-bootstrap";
+import {Button, Dropdown, Form, Modal, NavDropdown, Spinner} from "react-bootstrap";
 import {useCookies} from "react-cookie";
 import DjangoCSRFToken from 'django-react-csrftoken'
 import {useLoginContext} from "../auth";
@@ -65,15 +65,11 @@ function NavbarLoggedInUser(props) {
     if (!userData) {
         return <Spinner animation="border"/>
     }
-    return <Dropdown>
-        <Dropdown.Toggle variant="success" id="dropdown-basic">
-            {userData.username}
-        </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-            <Dropdown.Item onClick={handleClickedLogout}>Logout</Dropdown.Item>
-        </Dropdown.Menu>
-    </Dropdown>
+    return <NavDropdown title={userData.username} id="basic-nav-dropdown">
+        <NavDropdown.Item onClick={handleClickedLogout}>
+            Logout
+        </NavDropdown.Item>
+    </NavDropdown>
 }
 
 function UserDropdownOrLogin(props) {

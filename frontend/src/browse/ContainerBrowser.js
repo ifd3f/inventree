@@ -170,7 +170,7 @@ function ContainerBrowser(props) {
 
     return <Container fluid={true}>
         <Row>
-            <Col md={3}>
+            <Col md={4} lg={3}>
                 <ButtonToolbar>
                     <Button variant="info" size="sm">+ Add Container</Button>
                     <Button variant="info" size="sm">+ Add Item</Button>

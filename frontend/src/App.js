@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Navbar from "./navbar/Navbar.js";
+import MainNavbar from "./navbar/MainNavbar.js";
 import Dashboard from "./dashboard/Dashboard.js"
 import ContainerBrowser from "./browse/ContainerBrowser"
 import {
@@ -17,7 +17,7 @@ function App() {
     return <Router>
         <CookiesProvider>
             <LoginProvider>
-                <Navbar/>
+                <MainNavbar/>
                 <Switch>
                     <Route path="/about"></Route>
                     <Route path="/browse">
