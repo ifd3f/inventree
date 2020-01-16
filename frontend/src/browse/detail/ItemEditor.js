@@ -6,6 +6,7 @@ import axios from "axios"
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {setupCSRFToken, useLoginContext} from "../../auth";
+import {ContainerSearch} from "../../navbar/SearchBar";
 
 function ItemEditorForm(props) {
     return <Form>
@@ -19,7 +20,7 @@ function ItemEditorForm(props) {
             <Col>
                 <Form.Group controlId="parent">
                     <Form.Label>Parent</Form.Label>
-                    <Form.Control disabled defaultValue={props.container.name}/>
+
                 </Form.Group>
             </Col>
         </Row>
