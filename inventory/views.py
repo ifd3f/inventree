@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import F, Sum
+from drf_haystack.viewsets import HaystackViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import UpdateModelMixin, CreateModelMixin
@@ -12,7 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from inventory.models import Item, Container, ItemTag
 from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSerializer, LoginFormSerializer, \
-    UserSerializer
+    UserSerializer, ItemSearchSerializer
 
 
 class LoginAPIView(APIView):
@@ -153,3 +154,9 @@ class AllParentsView(ModelViewSet):
             node = node.parent
         return out
 
+
+class ItemSearchViewSet(HaystackViewSet):
+    index_models = [Item]
+    permission_classes = [AllowAny]
+    queryset = Item.objects.all()
+    serializer_class = ItemSearchSerializer

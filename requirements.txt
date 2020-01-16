@@ -2,3 +2,6 @@ django
 djangorestframework
 pillow
 django-jsonfield
+django-haystack
+drf-haystack
+whoosh

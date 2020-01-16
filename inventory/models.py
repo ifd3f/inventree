@@ -155,6 +155,10 @@ class Item(Node):
     def resource_path(self):
         return f'/item/{self.id}'
 
+    @property
+    def tags_string(self):
+        return ','.join(tag.name for tag in self.tags.all())
+
     def __str__(self):
         return f'{self.name} × {self.quantity}'
 
