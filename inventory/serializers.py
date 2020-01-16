@@ -87,7 +87,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ItemSearchSerializer(HaystackSerializerMixin, ItemSerializer):
-    class Meta:
+    class Meta(ItemSerializer):
         model = Item
         search_fields = ("text",)
         fields = ItemSerializer.Meta.fields
+
+
+class ContainerSearchSerializer(HaystackSerializerMixin, ContainerSerializer):
+    class Meta:
+        model = Container
+        search_fields = ("text",)
+        fields = ContainerSerializer.Meta.fields

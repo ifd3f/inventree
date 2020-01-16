@@ -13,7 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from inventory.models import Item, Container, ItemTag
 from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSerializer, LoginFormSerializer, \
-    UserSerializer, ItemSearchSerializer
+    UserSerializer, ItemSearchSerializer, ContainerSearchSerializer
 
 
 class LoginAPIView(APIView):
@@ -160,3 +160,10 @@ class ItemSearchViewSet(HaystackViewSet):
     permission_classes = [AllowAny]
     queryset = Item.objects.all()
     serializer_class = ItemSearchSerializer
+
+
+class ContainerSearchViewSet(HaystackViewSet):
+    index_models = [Container]
+    permission_classes = [AllowAny]
+    queryset = Container.objects.all()
+    serializer_class = ContainerSearchSerializer
