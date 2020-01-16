@@ -6,13 +6,13 @@ import axios from "axios";
 
 
 function ResultEntry(props) {
-    return <MenuItem {...props} >
-        {props.option}
+    return <MenuItem id={props.option.id} {...props} >
+        {props.option.name}
     </MenuItem>
 }
 
 function ResultMenu(props) {
-    return <Menu>
+    return <Menu id="search-results">
         {props.results.map((result, index) => {
             return <ResultEntry option={result} position={index}/>;
         })}
@@ -34,15 +34,16 @@ export function SearchBar(props) {
                 'text__contains': query
             }
         }).then(res => {
-            setOptions(res.data.map(x => x.name));
+            setOptions(res.data);
             setIsLoading(false);
         })
     };
 
     return <>
         <AsyncTypeahead
+            id="search-bar"
             minLength={2}
-            labelKey="search"
+            labelKey={option => option.name}
             placeholder="Containers, items, tags..."
             onSearch={handleSearch}
             options={options}

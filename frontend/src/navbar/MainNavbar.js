@@ -6,9 +6,8 @@ import {SearchBar} from "./SearchBar";
 
 function MiniSearch(props) {
     const history = useHistory();
-    const onChange = (ev) => {
-        //history.push(`/browse/${ev.}`)
-        console.log(ev);
+    const onChange = (entries) => {
+        history.push(`/browse/${entries[0].id}`);
     };
     return <SearchBar onChange={onChange}/>
 }
