@@ -269,4 +269,8 @@ pip-selfcheck.json
 
 # End of https://www.gitignore.io/api/venv,django,python,pycharm
 
+# IDEA datasources
 .idea/dataSources.*
+
+# Search indices
+search/
