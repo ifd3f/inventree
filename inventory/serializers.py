@@ -25,7 +25,8 @@ class ContainerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Container
-        fields = ['id', 'name', 'image', 'description', 'container_type', 'parent', 'location_metadata', 'metadata']
+        fields = ['id', 'name', 'image', 'description', 'container_type', 'parent', 'location_metadata', 'metadata',
+                  'qr_uuid']
 
 
 class ItemTagSerializer(serializers.ModelSerializer):
@@ -47,7 +48,7 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ['id', 'name', 'image', 'description', 'quantity', 'alert_quantity', 'source', 'source_url', 'parent',
-                  'tags', 'location_metadata']
+                  'tags', 'location_metadata', 'qr_uuid']
 
 
 class LoginFormSerializer(serializers.Serializer):
