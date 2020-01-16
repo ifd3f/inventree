@@ -1,29 +1,16 @@
 import React from 'react';
-import {Link} from "react-router-dom";
-
-import Button from "react-bootstrap/Button";
+import {Link, useHistory} from "react-router-dom";
 import {NavbarUserInfo} from "./Login";
-import {ButtonGroup, Dropdown, Form, FormControl, InputGroup, Nav, Navbar} from "react-bootstrap";
+import {Form, Nav, Navbar} from "react-bootstrap";
+import {SearchBar} from "./SearchBar";
 
 function MiniSearch(props) {
-    return <InputGroup>
-        <FormControl
-            placeholder="Items, containers, tags"
-            aria-label="Search"
-        />
-
-        <InputGroup.Append>
-            <Dropdown as={ButtonGroup}>
-                <Button variant="info">Search</Button>
-
-                <Dropdown.Toggle split variant="info" id="dropdown-split-basic"/>
-
-                <Dropdown.Menu>
-                    <Dropdown.Item href="#/action-1">Advanced...</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
-        </InputGroup.Append>
-    </InputGroup>;
+    const history = useHistory();
+    const onChange = (ev) => {
+        //history.push(`/browse/${ev.}`)
+        console.log(ev);
+    };
+    return <SearchBar onChange={onChange}/>
 }
 
 

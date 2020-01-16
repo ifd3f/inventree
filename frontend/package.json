@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "inventory-web-frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -11,6 +11,7 @@
     "django-react-csrftoken": "^1.0.4",
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.0-beta.16",
+    "react-bootstrap-typeahead": "^3.4.7",
     "react-cookie": "^4.0.3",
     "react-dom": "^16.12.0",
     "react-open-iconic-svg": "^3.0.1",
