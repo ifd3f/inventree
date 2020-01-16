@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useState} from "react";
+import React, {createContext, useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {useCookies} from "react-cookie";
 
@@ -25,12 +25,10 @@ export function LoginProvider(props) {
     const [token, setToken] = useState(cookies.loginToken);
     const [userData, setUserData] = useState(null);
 
-    if (token && !userData) {
-        axios.get('/api/users/current/')
-            .then(res => {
-                setUserData(res.data);
-            });
-    }
+    const clearLogin = () => {
+        setToken(null);
+        setUserData(null);
+    };
 
     const login = (username, password) => {
         return axios.get("/auth/csrf")
@@ -71,12 +69,26 @@ export function LoginProvider(props) {
                 xsrfHeaderName: "X-CSRFToken",
                 csrfCookieName: res.data.csrfToken
             }))
-            .then(_ => {
+            .then(() => {
                 removeCookie('loginToken');
-                setToken(null);
-                setUserData(null);
+            })
+            .finally(() => {
+                clearLogin();
             });
     };
+
+    useEffect(() => {
+        if (token && !userData) {
+            axios.get('/api/users/current/')
+                .then(res => {
+                    setUserData(res.data);
+                })
+                .catch(err => {
+                    console.warn("Error while fetching user data, will clear token", err);
+                    clearLogin();
+                })
+        }
+    });
 
     return <LoginContext.Provider value={{token, userData, login, logout}}>
         {props.children}

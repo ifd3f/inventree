@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {Link, NavLink} from "react-router-dom";
+import React from 'react';
+import {Link} from "react-router-dom";
 
 import Button from "react-bootstrap/Button";
-import {LoginModal, NavbarUserInfo} from "./Login";
-import {DropdownButton, Dropdown, FormControl, InputGroup, ButtonGroup, Navbar, Nav, Form} from "react-bootstrap";
+import {NavbarUserInfo} from "./Login";
+import {ButtonGroup, Dropdown, Form, FormControl, InputGroup, Nav, Navbar} from "react-bootstrap";
 
 function MiniSearch(props) {
     return <InputGroup>
@@ -30,17 +30,23 @@ function MiniSearch(props) {
 function MainNavbar(props) {
     return <>
         <Navbar bg="dark" variant="dark" expand="md">
-            <Navbar.Brand>
-                Unrefined Stockpile
-            </Navbar.Brand>
+            <Link to="/">
+                <Navbar.Brand>
+                    Unrefined Stockpile
+                </Navbar.Brand>
+            </Link>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
                     <Nav.Link>
-                        <Link to="/" className="nav-link active">Home</Link>
+                        <Link to="/">
+                            Home
+                        </Link>
                     </Nav.Link>
                     <Nav.Link>
-                        <Link to="/browse" className="nav-link active">Browse</Link>
+                        <Link to="/browse">
+                            Browse
+                        </Link>
                     </Nav.Link>
                 </Nav>
                 <Form inline className="mr-sm-2">

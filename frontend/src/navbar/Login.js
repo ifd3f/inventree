@@ -1,16 +1,33 @@
-import React, {useState} from 'react';
-import {Button, Dropdown, Form, Modal, NavDropdown, Spinner} from "react-bootstrap";
+import React, {useEffect, useState} from 'react';
+import {Button, Form, Modal, NavDropdown, Spinner} from "react-bootstrap";
 import {useCookies} from "react-cookie";
-import DjangoCSRFToken from 'django-react-csrftoken'
 import {useLoginContext} from "../auth";
 
-export function LoginModal(props) {
+
+function LoginModalFooter(props) {
+    const isLoading = props.isLoading;
+    const errorMsg = props.errorMsg;
+
+    return <Modal.Footer>
+        {
+            isLoading ? <Spinner animation="border"/> : <p className="text-danger">{errorMsg}</p>
+        }
+        <Button variant="primary" type="submit" disabled={isLoading}>
+            Login
+        </Button>
+    </Modal.Footer>;
+}
+
+function LoginModal(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState(null);
+
     const show = props.show;
     const setShow = props.setShow;
 
-    const {login} = useLoginContext();
+    const {userData, login} = useLoginContext();
 
     const handleClose = () => {
         setShow(false);
@@ -22,33 +39,43 @@ export function LoginModal(props) {
         setPassword(ev.target.value);
     };
 
-    const handleLogin = () => {
+    const handleLogin = (ev) => {
+        ev.preventDefault();
+        setLoading(true);
         login(username, password)
             .then(() => {
                 setShow(false);
-            });
+            })
+            .catch(err => {
+                setErrorMsg(err.toLocaleString());
+            })
+            .finally(() => {
+                setLoading(false);
+            })
     };
 
+    useEffect(() => {
+        if (userData) {
+            setErrorMsg(null);
+        }
+    });
+
     return <Modal show={show} onHide={handleClose}>
-        <Form>
+        <Form onSubmit={handleLogin}>
             <Modal.Header closeButton>
                 <Modal.Title>Create new item</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form.Group controlId="name">
-                    <Form.Label>Username</Form.Label>
+                    <Form.Label column={false}>Username</Form.Label>
                     <Form.Control type="text" onChange={handleChangeUsername}/>
                 </Form.Group>
                 <Form.Group controlId="parent">
-                    <Form.Label>Password</Form.Label>
+                    <Form.Label column={false}>Password</Form.Label>
                     <Form.Control type="password" onChange={handleChangePassword}/>
                 </Form.Group>
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant="primary" onClick={handleLogin}>
-                    Login
-                </Button>
-            </Modal.Footer>
+            <LoginModalFooter isLoading={isLoading} errorMsg={errorMsg}/>
         </Form>
     </Modal>
 }
@@ -73,7 +100,7 @@ function NavbarLoggedInUser(props) {
 }
 
 function UserDropdownOrLogin(props) {
-    if (props.token) {
+    if (props.isLoggedIn) {
         return <NavbarLoggedInUser/>
     } else {
         return <Button onClick={props.handleClickLogin}>Login</Button>
@@ -82,14 +109,14 @@ function UserDropdownOrLogin(props) {
 
 export function NavbarUserInfo(props) {
     const [show, setShow] = useState(false);
-    const [cookies] = useCookies(['loginToken']);
+    const {userData} = useLoginContext();
 
     const handleClickLogin = () => {
         setShow(true);
     };
 
     return <>
-        <UserDropdownOrLogin token={cookies.loginToken} handleClickLogin={handleClickLogin}/>
+        <UserDropdownOrLogin isLoggedIn={userData} handleClickLogin={handleClickLogin}/>
         <LoginModal show={show} setShow={setShow}/>
     </>
 
