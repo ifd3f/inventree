@@ -85,7 +85,7 @@ function NavbarLoggedInUser(props) {
 
     const handleClickedLogout = () => {
         logout().catch(err => {
-            console.log(err)
+            console.error(err)
         })
     };
 
