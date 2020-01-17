@@ -6,55 +6,13 @@ import axios from "axios"
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {setupCSRFToken} from "../../auth";
-import {AsyncTypeahead} from "react-bootstrap-typeahead";
+import {ContainerSearch} from "../../util/ContainerSearch";
 
 
-function ContainerSearch(props) {
-    const name = props.name;
-    const onChange = props.onChange;
-    const defaultValue = props.defaultValue;
-    const [wasChanged, setWasChanged] = useState(false);
-    const [options, setOptions] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+function TagSearch(props) {
 
-    const handleSearch = (query) => {
-        setIsLoading(true);
-        axios.get("/api/containers/search", {
-            params: {
-                'text__contains': query
-            }
-        }).then(res => {
-            setOptions(res.data);
-            setIsLoading(false);
-        });
-    };
-
-    const handleChange = (options) => {
-        onChange({
-            name: name,
-            option: options.length === 0 ? null : options[0]
-        });
-    };
-
-    const handleInputChange = (query) => {
-        setWasChanged(true);
-    };
-
-    const selected = (wasChanged || !defaultValue) ? null : [defaultValue];
-
-    return <AsyncTypeahead
-        id="search-bar"
-        minLength={2}
-        labelKey={option => option.name}
-        placeholder="Containers, items, tags..."
-        onSearch={handleSearch}
-        options={options}
-        isLoading={isLoading}
-        onChange={handleChange}
-        onInputChange={handleInputChange}
-        selected={selected}
-    />
 }
+
 
 function ItemEditorForm(props) {
     const onChange = props.onChange;
