@@ -39,12 +39,13 @@ export function ContainerSearch(props) {
         id="search-bar"
         minLength={2}
         labelKey={option => option.name}
-        placeholder="Containers, items, tags..."
+        placeholder="Search for containers"
         onSearch={handleSearch}
         options={options}
         isLoading={isLoading}
         onChange={handleChange}
         onInputChange={handleInputChange}
         selected={selected}
+        highlightOnlyResult="true"
     />
 }

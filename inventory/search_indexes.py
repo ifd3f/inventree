@@ -1,6 +1,6 @@
 from haystack import indexes
 
-from inventory.models import Item, Container
+from inventory.models import Item, Container, ItemTag
 
 
 class ItemIndex(indexes.SearchIndex, indexes.Indexable):
@@ -20,6 +20,16 @@ class ContainerIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Container
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.all()
+
+
+class ItemTagIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, model_attr='name')
+
+    def get_model(self):
+        return ItemTag
 
     def index_queryset(self, using=None):
         return self.get_model().objects.all()
