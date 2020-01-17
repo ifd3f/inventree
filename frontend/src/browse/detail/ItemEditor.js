@@ -136,7 +136,6 @@ export function ItemEditorModal(props) {
             ...prev,
             [name]: value,
         }));
-        console.log(name, value, formData);
     };
 
     const handleClose = () => {
