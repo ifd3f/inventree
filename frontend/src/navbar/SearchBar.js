@@ -1,6 +1,4 @@
-import {Dropdown} from "react-bootstrap";
 import React, {useState} from "react";
-import Form from "react-bootstrap/Form";
 import {AsyncTypeahead, Menu, MenuItem} from "react-bootstrap-typeahead";
 import axios from "axios";
 
@@ -36,20 +34,18 @@ export function SearchBar(props) {
         }).then(res => {
             setOptions(res.data);
             setIsLoading(false);
-        })
+        });
     };
 
-    return <>
-        <AsyncTypeahead
-            id="search-bar"
-            minLength={2}
-            labelKey={option => option.name}
-            placeholder="Containers, items, tags..."
-            onSearch={handleSearch}
-            options={options}
-            isLoading={isLoading}
-            renderMenu={renderResultMenu}
-            {...props}
-        />
-    </>
+    return <AsyncTypeahead
+        id="search-bar"
+        minLength={2}
+        labelKey={option => option.name}
+        placeholder="Containers, items, tags..."
+        onSearch={handleSearch}
+        options={options}
+        isLoading={isLoading}
+        renderMenu={renderResultMenu}
+        {...props}
+    />
 }

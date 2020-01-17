@@ -1,26 +1,83 @@
 import Form from "react-bootstrap/Form";
-import React, {Component, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios"
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {setupCSRFToken, useLoginContext} from "../../auth";
-import {ContainerSearch} from "../../navbar/SearchBar";
+import {setupCSRFToken} from "../../auth";
+import {AsyncTypeahead} from "react-bootstrap-typeahead";
+
+
+function ContainerSearch(props) {
+    const name = props.name;
+    const onChange = props.onChange;
+    const defaultValue = props.defaultValue;
+    const [wasChanged, setWasChanged] = useState(false);
+    const [options, setOptions] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSearch = (query) => {
+        setIsLoading(true);
+        axios.get("/api/containers/search", {
+            params: {
+                'text__contains': query
+            }
+        }).then(res => {
+            setOptions(res.data);
+            setIsLoading(false);
+        });
+    };
+
+    const handleChange = (options) => {
+        onChange({
+            name: name,
+            option: options.length === 0 ? null : options[0]
+        });
+    };
+
+    const handleInputChange = (query) => {
+        setWasChanged(true);
+    };
+
+    return <AsyncTypeahead
+        id="search-bar"
+        minLength={2}
+        labelKey={option => option.name}
+        placeholder="Containers, items, tags..."
+        onSearch={handleSearch}
+        options={options}
+        isLoading={isLoading}
+        onChange={handleChange}
+        onInputChange={handleInputChange}
+        selected={wasChanged ? null : [defaultValue]}
+    />
+}
 
 function ItemEditorForm(props) {
+    const onChange = props.onChange;
+    const defaultContainer = props.defaultContainer;
+
+    const onChangeContainer = (ev) => {
+        onChange(ev.name, ev.option ? ev.option.id : null);
+    };
+
+    const onChangeForm = (ev) => {
+        onChange(ev.target.id, ev.target.value);
+    };
+
     return <Form>
         <Row>
             <Col>
                 <Form.Group controlId="name">
                     <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" onChange={props.onChange}/>
+                    <Form.Control type="text" onChange={onChangeForm}/>
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="parent">
                     <Form.Label>Parent</Form.Label>
-
+                    <ContainerSearch name="parent" onChange={onChangeContainer} defaultValue={defaultContainer}/>
                 </Form.Group>
             </Col>
         </Row>
@@ -28,13 +85,13 @@ function ItemEditorForm(props) {
             <Col>
                 <Form.Group controlId="quantity">
                     <Form.Label>Quantity</Form.Label>
-                    <Form.Control type="number" min="0" onChange={props.onChange} defaultValue={0}/>
+                    <Form.Control type="number" min="0" onChange={onChangeForm} defaultValue={0}/>
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="alert_quantity">
                     <Form.Label>Alert Quantity</Form.Label>
-                    <Form.Control type="number" min="0" onChange={props.onChange} defaultValue={0}/>
+                    <Form.Control type="number" min="0" onChange={onChangeForm} defaultValue={0}/>
                 </Form.Group>
             </Col>
         </Row>
@@ -44,7 +101,7 @@ function ItemEditorForm(props) {
         </Form.Group>
         <Form.Group controlId="description">
             <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" onChange={props.onChange}/>
+            <Form.Control as="textarea" onChange={onChangeForm}/>
         </Form.Group>
     </Form>;
 }
@@ -71,11 +128,10 @@ export function ItemEditorModal(props) {
         }
     });
 
-    const onChange = (ev) => {
-        const target = ev.target;
+    const onChange = (name, value) => {
         setFormData(prev => ({
             ...prev,
-            [target.id]: target.value
+            name: value
         }));
     };
 
@@ -103,7 +159,7 @@ export function ItemEditorModal(props) {
                 <Modal.Title>Create new item</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ItemEditorForm onChange={onChange} container={container}/>
+                <ItemEditorForm onChange={onChange} defaultContainer={container}/>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
