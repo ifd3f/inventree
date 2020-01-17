@@ -2,16 +2,15 @@ import json
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from drf_haystack.serializers import HaystackSerializer, HaystackSerializerMixin
-from rest_framework import serializers, validators
-from rest_framework.fields import ListField
-from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField, SlugRelatedField
+from drf_haystack.serializers import HaystackSerializerMixin
+from rest_framework import serializers
+from rest_framework.fields import Field
+from rest_framework.serializers import ModelSerializer, Serializer
 
-from inventory.search_indexes import ItemIndex
 from inventory.models import Item, Container, ItemTag
 
 
-class JSONFieldSerializerField(serializers.Field):
+class JSONFieldSerializerField(Field):
     def to_internal_value(self, data):
         if isinstance(data, str):
             return json.loads(data)
@@ -21,7 +20,7 @@ class JSONFieldSerializerField(serializers.Field):
         return json.loads(json.dumps(value))
 
 
-class ContainerSerializer(serializers.ModelSerializer):
+class ContainerSerializer(ModelSerializer):
     metadata = JSONFieldSerializerField()
     location_metadata = JSONFieldSerializerField(default={})
 
@@ -31,19 +30,19 @@ class ContainerSerializer(serializers.ModelSerializer):
                   'qr_uuid']
 
 
-class ItemTagSerializer(serializers.ModelSerializer):
+class ItemTagSerializer(ModelSerializer):
     class Meta:
         model = ItemTag
         fields = ['name', 'item_set']
 
 
-class SimplifiedItemTagSerializer(serializers.ModelSerializer):
+class SimplifiedItemTagSerializer(ModelSerializer):
     class Meta:
         model = ItemTag
         fields = ['name']
 
 
-class ItemSerializer(serializers.ModelSerializer):
+class ItemSerializer(ModelSerializer):
     location_metadata = JSONFieldSerializerField(default={})
     tags = serializers.SlugRelatedField(many=True, slug_field='name', queryset=ItemTag.objects.all(), default=[])
 
@@ -53,7 +52,7 @@ class ItemSerializer(serializers.ModelSerializer):
                   'tags', 'location_metadata', 'qr_uuid']
 
 
-class LoginFormSerializer(serializers.Serializer):
+class LoginFormSerializer(Serializer):
     username = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=255, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
@@ -80,7 +79,7 @@ class LoginFormSerializer(serializers.Serializer):
         }
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ['username']
@@ -98,3 +97,10 @@ class ContainerSearchSerializer(HaystackSerializerMixin, ContainerSerializer):
         model = Container
         search_fields = ("text",)
         fields = ContainerSerializer.Meta.fields
+
+
+class ItemTagSuggestSerializer(HaystackSerializerMixin, ModelSerializer):
+    class Meta:
+        model = ItemTag
+        search_fields = ("name",)
+        fields = ("name",)

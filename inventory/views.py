@@ -10,7 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from inventory.models import Item, Container, ItemTag
 from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSerializer, UserSerializer, \
-    ItemSearchSerializer, ContainerSearchSerializer
+    ItemSearchSerializer, ContainerSearchSerializer, ItemTagSuggestSerializer
 
 
 class ItemViewSet(ModelViewSet):
@@ -146,3 +146,10 @@ class ContainerSearchViewSet(HaystackViewSet):
     permission_classes = [AllowAny]
     queryset = Container.objects.all()
     serializer_class = ContainerSearchSerializer
+
+
+class ItemTagSuggestViewSet(HaystackViewSet):
+    index_models = [ItemTag]
+    permission_classes = [AllowAny]
+    queryset = ItemTag.objects.all()
+    serializer_class = ItemTagSuggestSerializer

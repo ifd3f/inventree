@@ -46,6 +46,7 @@ export function SearchBar(props) {
         options={options}
         isLoading={isLoading}
         renderMenu={renderResultMenu}
+        highlightOnlyResult="true"
         {...props}
     />
 }

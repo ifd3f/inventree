@@ -7,10 +7,56 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {setupCSRFToken} from "../../auth";
 import {ContainerSearch} from "../../util/ContainerSearch";
+import {AsyncTypeahead} from "react-bootstrap-typeahead";
 
 
 function TagSearch(props) {
+    const name = props.name;
+    const onChange = props.onChange;
+    const defaultValue = props.defaultValue;
+    const [wasChanged, setWasChanged] = useState(false);
+    const [options, setOptions] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
+    const handleSearch = (query) => {
+        setIsLoading(true);
+        axios.get("/api/tags/search", {
+            params: {
+                'text__contains': query
+            }
+        }).then(res => {
+            setOptions(res.data);
+            setIsLoading(false);
+        });
+    };
+
+    const handleChange = (options) => {
+        onChange({
+            name: name,
+            option: options.length === 0 ? null : options[0]
+        });
+    };
+
+    const handleInputChange = (query) => {
+        setWasChanged(true);
+    };
+
+    const selected = (wasChanged || !defaultValue) ? null : [defaultValue];
+
+    return <AsyncTypeahead
+        id="search-bar"
+        minLength={2}
+        labelKey={option => option.name}
+        placeholder="Enter tags here..."
+        onSearch={handleSearch}
+        options={options}
+        isLoading={isLoading}
+        onChange={handleChange}
+        onInputChange={handleInputChange}
+        selected={selected}
+        highlightOnlyResult={true}
+        multiple={true}
+    />
 }
 
 
@@ -62,6 +108,10 @@ function ItemEditorForm(props) {
         <Form.Group controlId="description">
             <Form.Label>Description</Form.Label>
             <Form.Control as="textarea" onChange={onChangeForm}/>
+        </Form.Group>
+        <Form.Group>
+            <Form.Label>Tags</Form.Label>
+            <TagSearch/>
         </Form.Group>
     </Form>;
 }
