@@ -1,37 +1,16 @@
 from django.contrib.auth.models import User
 from django.db.models import F, Sum
 from drf_haystack.viewsets import HaystackViewSet
-from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.mixins import UpdateModelMixin, CreateModelMixin
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from inventory.models import Item, Container, ItemTag
-from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSerializer, LoginFormSerializer, \
-    UserSerializer, ItemSearchSerializer, ContainerSearchSerializer
-
-
-class LoginAPIView(APIView):
-    permission_classes = (AllowAny,)
-    renderer_classes = (JSONRenderer,)
-    serializer_class = LoginFormSerializer
-
-    def post(self, request):
-        user = request.data.get('user', {})
-
-        # Notice here that we do not call `serializer.save()` like we did for
-        # the registration endpoint. This is because we don't actually have
-        # anything to save. Instead, the `validate` method on our serializer
-        # handles everything we need.
-        serializer = self.serializer_class(data=user)
-        serializer.is_valid(raise_exception=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+from inventory.serializers import ItemSerializer, ItemTagSerializer, ContainerSerializer, UserSerializer, \
+    ItemSearchSerializer, ContainerSearchSerializer
 
 
 class ItemViewSet(ModelViewSet):
@@ -62,15 +41,15 @@ class ItemViewSet(ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         self.ensure_tags(request)
-        super().update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
         self.ensure_tags(request)
-        super().partial_update(request, *args, **kwargs)
+        return super().partial_update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         self.ensure_tags(request)
-        super().create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
 
 
 class ContainerViewSet(ModelViewSet):
