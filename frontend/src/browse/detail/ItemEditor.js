@@ -40,6 +40,8 @@ function ContainerSearch(props) {
         setWasChanged(true);
     };
 
+    const selected = (wasChanged || !defaultValue) ? null : [defaultValue];
+
     return <AsyncTypeahead
         id="search-bar"
         minLength={2}
@@ -50,7 +52,7 @@ function ContainerSearch(props) {
         isLoading={isLoading}
         onChange={handleChange}
         onInputChange={handleInputChange}
-        selected={wasChanged ? null : [defaultValue]}
+        selected={selected}
     />
 }
 
@@ -121,7 +123,7 @@ export function ItemEditorModal(props) {
     const [errorMsg, setErrorMsg] = useState(null);
 
     useEffect(() => {
-        if (formData.parent === null) {
+        if (formData.parent === null && container) {
             setFormData(prev => ({
                 ...prev,
                 parent: container.id
