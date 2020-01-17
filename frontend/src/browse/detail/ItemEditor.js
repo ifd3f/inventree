@@ -77,7 +77,7 @@ function ItemEditorForm(props) {
                 </Form.Group>
             </Col>
             <Col>
-                <Form.Group controlId="parent">
+                <Form.Group>
                     <Form.Label>Parent</Form.Label>
                     <ContainerSearch name="parent" onChange={onChangeContainer} defaultValue={defaultContainer}/>
                 </Form.Group>
@@ -134,8 +134,9 @@ export function ItemEditorModal(props) {
     const onChange = (name, value) => {
         setFormData(prev => ({
             ...prev,
-            name: value
+            [name]: value,
         }));
+        console.log(name, value, formData);
     };
 
     const handleClose = () => {
