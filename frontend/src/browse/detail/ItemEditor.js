@@ -118,6 +118,7 @@ export function ItemEditorModal(props) {
     const container = props.container;
 
     const [formData, setFormData] = useState(INITIAL_FORM_STATE);
+    const [errorMsg, setErrorMsg] = useState(null);
 
     useEffect(() => {
         if (formData.parent === null) {
@@ -145,30 +146,31 @@ export function ItemEditorModal(props) {
 
     const handleSave = () => {
         setupCSRFToken()
-            .then(() =>
-                axios.post(`/api/items/`, formData)
-            )
+            .then(() => axios.post(`/api/items/`, formData))
             .then(res => {
                 handleClose();
             })
+            .catch(err => {
+                console.error(err);
+                setErrorMsg(err.toLocaleString());
+            });
     };
 
-    return (
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Create new item</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <ItemEditorForm onChange={onChange} defaultContainer={container}/>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                    Cancel
-                </Button>
-                <Button variant="primary" onClick={handleSave}>
-                    Save
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    );
+    return <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+            <Modal.Title>Create new item</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <ItemEditorForm onChange={onChange} defaultContainer={container}/>
+        </Modal.Body>
+        <Modal.Footer>
+            <p className="text-danger">{errorMsg}</p>
+            <Button variant="secondary" onClick={handleClose}>
+                Cancel
+            </Button>
+            <Button variant="primary" onClick={handleSave}>
+                Save
+            </Button>
+        </Modal.Footer>
+    </Modal>;
 }
