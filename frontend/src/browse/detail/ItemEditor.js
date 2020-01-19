@@ -33,7 +33,7 @@ function TagSearch(props) {
     const handleChange = (options) => {
         onChange({
             name: name,
-            option: options
+            option: options.map(x => x.search)
         });
     };
 
@@ -72,8 +72,7 @@ function ItemEditorForm(props) {
     };
 
     const onChangeTags = (ev) => {
-        console.log(ev);
-        onChange(ev.name, ev.options);
+        onChange(ev.name, ev.option);
     };
 
     return <Form>
@@ -159,6 +158,7 @@ export function ItemEditorModal(props) {
     };
 
     const handleSave = () => {
+        console.log('save', formData);
         setupCSRFToken()
             .then(() => axios.post(`/api/items/`, formData))
             .then(res => {
