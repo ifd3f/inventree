@@ -31,10 +31,7 @@ function TagSearch(props) {
     };
 
     const handleChange = (options) => {
-        onChange({
-            name: name,
-            option: options.map(x => x.search)
-        });
+        onChange({name, options});
     };
 
     const handleInputChange = (query) => {

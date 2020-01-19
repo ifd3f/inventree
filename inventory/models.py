@@ -89,6 +89,7 @@ class Node(models.Model):
 class Container(Node):
     container_type = models.IntegerField(choices=CONTAINER_TYPE_CHOICES, default=CONTAINER_TYPE_DEFAULT)
     """
+    A node that contains other nodes.
     """
 
     metadata = JSONField(default={})
@@ -124,8 +125,12 @@ class ItemTag(models.Model):
     name = models.CharField(verbose_name='name', max_length=30, primary_key=True)
 
     def save(self, *args, **kwargs):
+        print(self.name)
         self.name = self.name.lower()
-        return super().save(*args, **kwargs)
+        if not self.item_set.exists():
+            self.delete()
+        else:
+            return super().save(*args, **kwargs)
 
     @property
     def link(self):
