@@ -20,12 +20,12 @@ function TagSearch(props) {
 
     const handleSearch = (query) => {
         setIsLoading(true);
-        axios.get("/api/tags/search", {
+        axios.get("/api/item-tags/suggest", {
             params: {
-                'text__contains': query
+                'name__contains': query
             }
         }).then(res => {
-            setOptions(res.data);
+            setOptions(res.data.map(x => x.name));
             setIsLoading(false);
         });
     };
@@ -33,7 +33,7 @@ function TagSearch(props) {
     const handleChange = (options) => {
         onChange({
             name: name,
-            option: options.length === 0 ? null : options[0]
+            option: options
         });
     };
 
@@ -41,12 +41,11 @@ function TagSearch(props) {
         setWasChanged(true);
     };
 
-    const selected = (wasChanged || !defaultValue) ? null : [defaultValue];
+    const selected = (wasChanged || !defaultValue) ? null : defaultValue;
 
     return <AsyncTypeahead
-        id="search-bar"
-        minLength={2}
-        labelKey={option => option.name}
+        id="item-tag-search-bar"
+        labelKey="search"
         placeholder="Enter tags here..."
         onSearch={handleSearch}
         options={options}
@@ -54,8 +53,8 @@ function TagSearch(props) {
         onChange={handleChange}
         onInputChange={handleInputChange}
         selected={selected}
-        highlightOnlyResult={true}
         multiple={true}
+        allowNew={true}
     />
 }
 
@@ -70,6 +69,11 @@ function ItemEditorForm(props) {
 
     const onChangeForm = (ev) => {
         onChange(ev.target.id, ev.target.value);
+    };
+
+    const onChangeTags = (ev) => {
+        console.log(ev);
+        onChange(ev.name, ev.options);
     };
 
     return <Form>
@@ -111,7 +115,7 @@ function ItemEditorForm(props) {
         </Form.Group>
         <Form.Group>
             <Form.Label>Tags</Form.Label>
-            <TagSearch/>
+            <TagSearch name="tags" onChange={onChangeTags}/>
         </Form.Group>
     </Form>;
 }

@@ -36,7 +36,7 @@ export function ContainerSearch(props) {
     const selected = (wasChanged || !defaultValue) ? null : [defaultValue];
 
     return <AsyncTypeahead
-        id="search-bar"
+        id="container-search-bar"
         minLength={2}
         labelKey={option => option.name}
         placeholder="Search for containers"

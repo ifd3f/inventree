@@ -25,8 +25,9 @@ class ContainerIndex(indexes.SearchIndex, indexes.Indexable):
         return self.get_model().objects.all()
 
 
-class ItemTagIndex(indexes.SearchIndex, indexes.Indexable):
+class ItemTagSuggestIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, model_attr='name')
+    name = indexes.CharField(model_attr='name')
 
     def get_model(self):
         return ItemTag
