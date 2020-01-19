@@ -117,20 +117,15 @@ class Container(Node):
         while node.parent is not None:
             node = node.parent
             if node == self:
-                raise ValidationError(
-                    'Containers cannot be circularly contained within themselves... with current technology.')
+                raise ValidationError('Current technology does not allow circular containment.')
 
 
 class ItemTag(models.Model):
     name = models.CharField(verbose_name='name', max_length=30, primary_key=True)
 
     def save(self, *args, **kwargs):
-        if not self.name.islower():
-            self.name = self.name.lower()
-        if not self.item_set.exists():
-            self.delete()
-        else:
-            return super().save(*args, **kwargs)
+        self.name = self.name.lower()
+        return super().save(*args, **kwargs)
 
     @property
     def link(self):
