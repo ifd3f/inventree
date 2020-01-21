@@ -58,7 +58,7 @@ function TagSearch(props) {
 
 function ItemEditorForm(props) {
     const onChange = props.onChange;
-    const defaultContainer = props.defaultContainer;
+    const defaultItem = props.defaultItem;
 
     const onChangeContainer = (ev) => {
         onChange(ev.name, ev.option ? ev.option.id : null);
@@ -83,7 +83,7 @@ function ItemEditorForm(props) {
             <Col>
                 <Form.Group>
                     <Form.Label>Parent</Form.Label>
-                    <ContainerSearch name="parent" onChange={onChangeContainer} defaultValue={defaultContainer}/>
+                    <ContainerSearch name="parent" onChange={onChangeContainer} defaultValue={defaultItem.container}/>
                 </Form.Group>
             </Col>
         </Row>
@@ -172,7 +172,7 @@ export function ItemEditorModal(props) {
             <Modal.Title>Create new item</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <ItemEditorForm onChange={onChange} defaultContainer={container}/>
+            <ItemEditorForm onChange={onChange} defaultItem={{container}}/>
         </Modal.Body>
         <Modal.Footer>
             <p className="text-danger">{errorMsg}</p>
