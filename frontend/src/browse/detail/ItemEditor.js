@@ -77,7 +77,7 @@ function ItemEditorForm(props) {
             <Col>
                 <Form.Group controlId="name">
                     <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" onChange={onChangeForm}/>
+                    <Form.Control type="text" onChange={onChangeForm} defaultValue={defaultItem.name}/>
                 </Form.Group>
             </Col>
             <Col>
@@ -91,13 +91,27 @@ function ItemEditorForm(props) {
             <Col>
                 <Form.Group controlId="quantity">
                     <Form.Label>Quantity</Form.Label>
-                    <Form.Control type="number" min="0" onChange={onChangeForm} defaultValue={0}/>
+                    <Form.Control type="number" min="0" onChange={onChangeForm} defaultValue={defaultItem.quantity || 0}/>
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="alert_quantity">
                     <Form.Label>Alert Quantity</Form.Label>
-                    <Form.Control type="number" min="0" onChange={onChangeForm} defaultValue={0}/>
+                    <Form.Control type="number" min="0" onChange={onChangeForm} defaultValue={defaultItem.alert_quantity || 0}/>
+                </Form.Group>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <Form.Group controlId="source">
+                    <Form.Label>Source Name</Form.Label>
+                    <Form.Control type="text" min="0" onChange={onChangeForm} defaultValue={defaultItem.source}/>
+                </Form.Group>
+            </Col>
+            <Col>
+                <Form.Group controlId="source_url">
+                    <Form.Label>Source URL</Form.Label>
+                    <Form.Control type="url" min="0" onChange={onChangeForm} defaultValue={defaultItem.source_url}/>
                 </Form.Group>
             </Col>
         </Row>
@@ -107,7 +121,7 @@ function ItemEditorForm(props) {
         </Form.Group>
         <Form.Group controlId="description">
             <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" onChange={onChangeForm}/>
+            <Form.Control as="textarea" onChange={onChangeForm} defaultValue={defaultItem.description}/>
         </Form.Group>
         <Form.Group>
             <Form.Label>Tags</Form.Label>
