@@ -1,5 +1,7 @@
-import React, {Component} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
+import {Button, ButtonToolbar} from "react-bootstrap";
+import {PencilIcon, XIcon} from "react-open-iconic-svg";
 
 function ItemRow(props) {
     let item = props.item;
@@ -8,6 +10,16 @@ function ItemRow(props) {
         <td>Item</td>
         <td>{item.location}</td>
         <td>{item.description}</td>
+        <td>
+            <ButtonToolbar>
+                <Button size="sm" variant="success">
+                    <PencilIcon style={{fill: 'white'}}/>
+                </Button>
+                <Button size="sm" variant="danger">
+                    <XIcon style={{fill: 'white'}}/>
+                </Button>
+            </ButtonToolbar>
+        </td>
     </tr>
 }
 
@@ -18,6 +30,16 @@ function ContainerRow(props) {
         <td>Container</td>
         <td>{container.location}</td>
         <td>{container.description}</td>
+        <td>
+            <ButtonToolbar>
+                <Button size="sm" variant="success">
+                    <PencilIcon style={{fill: 'white'}}/>
+                </Button>
+                <Button size="sm" variant="danger">
+                    <XIcon style={{fill: 'white'}}/>
+                </Button>
+            </ButtonToolbar>
+        </td>
     </tr>
 }
 
@@ -25,7 +47,8 @@ export function DefaultContents(props) {
     let contents = props.contents;
     let body;
     if (contents) {
-        let containers = contents.containers.map(container => <ContainerRow key={`c${container.id}`} container={container}/>);
+        let containers = contents.containers.map(container => <ContainerRow key={`c${container.id}`}
+                                                                            container={container}/>);
         let items = contents.items.map(item => <ItemRow key={`i${item.id}`} item={item}/>);
         body = [containers, items];
     }
@@ -40,10 +63,11 @@ export function DefaultContents(props) {
             <th>Type</th>
             <th>Location</th>
             <th>Description</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
-            {body}
+        {body}
         </tbody>
     </table>
 }

@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import axios from "axios"
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {setupCSRFToken} from "../../auth";
+import {applyCSRFToken, setupCSRFToken} from "../../auth";
 import {ContainerSearch} from "../../util/ContainerSearch";
 import {AsyncTypeahead} from "react-bootstrap-typeahead";
 
@@ -91,13 +91,15 @@ function ItemEditorForm(props) {
             <Col>
                 <Form.Group controlId="quantity">
                     <Form.Label>Quantity</Form.Label>
-                    <Form.Control type="number" min="0" onChange={onChangeForm} defaultValue={defaultItem.quantity || 0}/>
+                    <Form.Control type="number" min="0" onChange={onChangeForm}
+                                  defaultValue={defaultItem.quantity || 0}/>
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="alert_quantity">
                     <Form.Label>Alert Quantity</Form.Label>
-                    <Form.Control type="number" min="0" onChange={onChangeForm} defaultValue={defaultItem.alert_quantity || 0}/>
+                    <Form.Control type="number" min="0" onChange={onChangeForm}
+                                  defaultValue={defaultItem.alert_quantity || 0}/>
                 </Form.Group>
             </Col>
         </Row>
@@ -140,6 +142,7 @@ export function ItemEditorModal(props) {
     const show = props.show;
     const setShow = props.setShow;
     const container = props.container;
+    const existingID = props.existingID;
 
     const [formData, setFormData] = useState(INITIAL_FORM_STATE);
     const [errorMsg, setErrorMsg] = useState(null);
@@ -169,9 +172,28 @@ export function ItemEditorModal(props) {
     };
 
     const handleSave = () => {
-        console.log('save', formData);
+        console.log('Sending request to create item', formData);
         setupCSRFToken()
-            .then(() => axios.post(`/api/items/`, formData))
+            .then(csrf => {
+                applyCSRFToken(csrf);
+                return axios.put(`/api/items/${existingID}`, formData)
+            })
+            .then(res => {
+                handleClose();
+            })
+            .catch(err => {
+                console.error(err);
+                setErrorMsg(err.toLocaleString());
+            });
+    };
+
+    const handleCreate = () => {
+        console.log('Sending request to save item', formData);
+        setupCSRFToken()
+            .then(csrf => {
+                applyCSRFToken(csrf);
+                return axios.post(`/api/items/`, formData)
+            })
             .then(res => {
                 handleClose();
             })
@@ -193,9 +215,15 @@ export function ItemEditorModal(props) {
             <Button variant="secondary" onClick={handleClose}>
                 Cancel
             </Button>
-            <Button variant="primary" onClick={handleSave}>
-                Save
-            </Button>
+            {
+                existingID ?
+                    <Button variant="primary" onClick={handleSave}>
+                        Save
+                    </Button> :
+                    <Button variant="primary" onClick={handleCreate}>
+                        Create
+                    </Button>
+            }
         </Modal.Footer>
     </Modal>;
 }

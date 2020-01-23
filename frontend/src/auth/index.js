@@ -9,15 +9,15 @@ export function useLoginContext() {
     return useContext(LoginContext);
 }
 
+export function applyCSRFToken(csrfToken) {
+    axios.defaults.headers['X-CSRFToken'] = csrfToken;
+    axios.defaults.xsrfHeaderName = "X-CSRFToken";
+    axios.defaults.csrfCookieName = csrfToken;
+}
+
 export function setupCSRFToken() {
     return axios.get('/auth/csrf')
-        .then(res => {
-            axios.defaults.headers = {
-                'X-CSRFToken': res.data.csrfToken
-            };
-            axios.defaults.xsrfHeaderName = "X-CSRFToken";
-            axios.defaults.csrfCookieName = res.data.csrfToken;
-        })
+        .then(res => res.data.csrfToken);
 }
 
 export function LoginProvider(props) {
