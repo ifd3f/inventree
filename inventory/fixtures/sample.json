@@ -1,0 +1,126 @@
+[
+  {
+    "model": "inventory.container",
+    "pk": 1,
+    "fields": {
+      "name": "Room",
+      "description": "My room",
+      "image": "",
+      "parent": null,
+      "location_metadata": {},
+      "qr_uuid": "d0820577-9bae-11ea-94fb-e86a64995d46",
+      "container_type": 0,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 2,
+    "fields": {
+      "name": "Gray Shelf",
+      "description": "It's the big gray shelf boi",
+      "image": "",
+      "parent": 1,
+      "location_metadata": {},
+      "qr_uuid": "ddfccf94-9bae-11ea-94fb-e86a64995d46",
+      "container_type": 1,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 3,
+    "fields": {
+      "name": "Resistor Box",
+      "description": "Lotsa resistas",
+      "image": "",
+      "parent": null,
+      "location_metadata": {},
+      "qr_uuid": "e8f31cbe-9bae-11ea-94fb-e86a64995d46",
+      "container_type": 1,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 5,
+    "fields": {
+      "name": "Bookshelf",
+      "description": "",
+      "image": "",
+      "parent": 1,
+      "location_metadata": {},
+      "qr_uuid": "023b5182-9baf-11ea-94fb-e86a64995d46",
+      "container_type": 0,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 1,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 5,
+      "location_metadata": {},
+      "qr_uuid": "16cc5c3f-9baf-11ea-94fb-e86a64995d46",
+      "name": "Code Complete",
+      "quantity": 1,
+      "alert_quantity": 0,
+      "source": "",
+      "source_url": null,
+      "tags": []
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 2,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 3,
+      "location_metadata": {},
+      "qr_uuid": "20ddd5ce-9baf-11ea-94fb-e86a64995d46",
+      "name": "69 Ohm Resistor",
+      "quantity": 2,
+      "alert_quantity": 0,
+      "source": "",
+      "source_url": null,
+      "tags": []
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 3,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 3,
+      "location_metadata": {},
+      "qr_uuid": "2c6f8a68-9baf-11ea-94fb-e86a64995d46",
+      "name": "420 Ohm Resistor",
+      "quantity": 32,
+      "alert_quantity": 0,
+      "source": "",
+      "source_url": null,
+      "tags": []
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 4,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 2,
+      "location_metadata": {},
+      "qr_uuid": "33dd0fc8-9baf-11ea-94fb-e86a64995d46",
+      "name": "Tank Robot",
+      "quantity": 1,
+      "alert_quantity": 2,
+      "source": "",
+      "source_url": null,
+      "tags": []
+    }
+  }
+]
