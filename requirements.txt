@@ -2,11 +2,9 @@ django
 djangorestframework
 pillow
 django-jsonfield
-django-haystack
-drf-haystack
 whoosh
 django-rest-auth
 markdown
 django-filter
 django-oauth-toolkit
-djangorestframework
+django-cors-headers

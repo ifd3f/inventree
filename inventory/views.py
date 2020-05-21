@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db.models import F, Sum
-from drf_haystack.viewsets import HaystackViewSet
 from rest_framework.decorators import action
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -134,21 +133,21 @@ class AllParentsView(ModelViewSet):
         return out
 
 
-class ItemSearchViewSet(HaystackViewSet):
+class ItemSearchViewSet(ModelViewSet):
     index_models = [Item]
     permission_classes = [AllowAny]
     queryset = Item.objects.all()
     serializer_class = ItemSearchSerializer
 
 
-class ContainerSearchViewSet(HaystackViewSet):
+class ContainerSearchViewSet(ModelViewSet):
     index_models = [Container]
     permission_classes = [AllowAny]
     queryset = Container.objects.all()
     serializer_class = ContainerSearchSerializer
 
 
-class ItemTagSuggestViewSet(HaystackViewSet):
+class ItemTagSuggestViewSet(ModelViewSet):
     index_models = [ItemTag]
     permission_classes = [AllowAny]
     queryset = ItemTag.objects.all()

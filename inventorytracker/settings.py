@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'rest_auth',
+    'oauth2_provider',
 
     'authentication.apps.AuthenticationConfig',
     'inventory.apps.InventoryConfig',

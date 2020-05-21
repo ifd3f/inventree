@@ -2,7 +2,6 @@ import json
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from drf_haystack.serializers import HaystackSerializerMixin
 from rest_framework import serializers
 from rest_framework.fields import Field
 from rest_framework.serializers import ModelSerializer, Serializer
@@ -85,21 +84,21 @@ class UserSerializer(ModelSerializer):
         fields = ['username']
 
 
-class ItemSearchSerializer(HaystackSerializerMixin, ItemSerializer):
+class ItemSearchSerializer(ItemSerializer):
     class Meta(ItemSerializer):
         model = Item
         search_fields = ("text",)
         fields = ItemSerializer.Meta.fields
 
 
-class ContainerSearchSerializer(HaystackSerializerMixin, ContainerSerializer):
+class ContainerSearchSerializer(ContainerSerializer):
     class Meta:
         model = Container
         search_fields = ("text",)
         fields = ContainerSerializer.Meta.fields
 
 
-class ItemTagSuggestSerializer(HaystackSerializerMixin, ModelSerializer):
+class ItemTagSuggestSerializer(ModelSerializer):
     class Meta:
         model = ItemTag
         search_fields = ("name",)
