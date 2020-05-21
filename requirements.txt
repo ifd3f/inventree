@@ -5,3 +5,8 @@ django-jsonfield
 django-haystack
 drf-haystack
 whoosh
+django-rest-auth
+markdown
+django-filter
+django-oauth-toolkit
+djangorestframework

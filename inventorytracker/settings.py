@@ -39,10 +39,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
-    'oauth2_provider',
     'corsheaders',
     'rest_auth',
-    'haystack',
 
     'authentication.apps.AuthenticationConfig',
     'inventory.apps.InventoryConfig',
@@ -60,8 +58,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = ['localhost:3000']
-CSRF_TRUSTED_ORIGINS = ['localhost:3000']
+CORS_ORIGIN_WHITELIST = ['https://localhost:3000']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:3000']
 
 ROOT_URLCONF = 'inventorytracker.urls'
 
