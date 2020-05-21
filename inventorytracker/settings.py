@@ -59,7 +59,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = ['https://localhost:3000']
+#CORS_ORIGIN_WHITELIST = ['https://localhost:3000']
+CORS_ORIGIN_ALLOW_ALL = True
 CSRF_TRUSTED_ORIGINS = ['https://localhost:3000']
 
 ROOT_URLCONF = 'inventorytracker.urls'

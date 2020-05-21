@@ -7,4 +7,5 @@ django-rest-auth
 markdown
 django-filter
 django-oauth-toolkit
+django-cors-middleware
 django-cors-headers

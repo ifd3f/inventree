@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('auth/', include('authentication.urls')),
+    path('oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
 
 if settings.DEBUG:
