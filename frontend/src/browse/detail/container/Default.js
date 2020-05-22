@@ -1,10 +1,21 @@
-import React from "react";
+import React, {useState} from "react";
 import {Link} from "react-router-dom";
 import {Button, ButtonToolbar} from "react-bootstrap";
 import {PencilIcon, XIcon} from "react-open-iconic-svg";
+import {ItemEditorModal} from "../ItemEditor";
 
-function ItemRow(props) {
-    let item = props.item;
+function ItemRow({item}) {
+    const [showItemModal, setShowItemModal] = useState(false);
+
+    const onEdit = () => {
+        console.log(item)
+        setShowItemModal(true);
+    };
+
+    const onDelete = () => {
+
+    };
+
     return <tr key={`i-${item.id}`}>
         <td>{`${item.name} x ${item.quantity}`}</td>
         <td>Item</td>
@@ -12,19 +23,34 @@ function ItemRow(props) {
         <td>{item.description}</td>
         <td>
             <ButtonToolbar>
-                <Button size="sm" variant="success">
+                <Button size="sm" variant="success" onClick={onEdit}>
                     <PencilIcon style={{fill: 'white'}}/>
                 </Button>
-                <Button size="sm" variant="danger">
+                <Button size="sm" variant="danger" onClick={onDelete}>
                     <XIcon style={{fill: 'white'}}/>
                 </Button>
             </ButtonToolbar>
         </td>
+        <ItemEditorModal
+            show={showItemModal}
+            setShow={setShowItemModal}
+            container={item.container}
+            existingID={item.id}
+            defaultItem={item}/>
     </tr>
 }
 
-function ContainerRow(props) {
-    let container = props.container;
+function ContainerRow({container}) {
+    const [showItemModal, setShowItemModal] = useState(false);
+
+    const onEdit = () => {
+        setShowItemModal(true);
+    };
+
+    const onDelete = () => {
+
+    };
+
     return <tr key={`c-${container.id}`}>
         <td><Link to={`/browse/${container.id}`}>{container.name}</Link></td>
         <td>Container</td>
@@ -32,10 +58,10 @@ function ContainerRow(props) {
         <td>{container.description}</td>
         <td>
             <ButtonToolbar>
-                <Button size="sm" variant="success">
+                <Button size="sm" variant="success" onClick={onEdit}>
                     <PencilIcon style={{fill: 'white'}}/>
                 </Button>
-                <Button size="sm" variant="danger">
+                <Button size="sm" variant="danger" onClick={onDelete}>
                     <XIcon style={{fill: 'white'}}/>
                 </Button>
             </ButtonToolbar>

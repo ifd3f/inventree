@@ -13,6 +13,10 @@ export function Contents(props) {
     switch (container.container_type) {
         case CONTAINER_TYPE_DEFAULT:
             return <DefaultContents contents={contents}/>;
+        case CONTAINER_TYPE_GRID:
+            return <DefaultContents contents={contents}/>;
+        case CONTAINER_TYPE_FREEFORM:
+            return <DefaultContents contents={contents}/>;
     }
     throw `unsupported container_type ${container.container_type}`;
 }

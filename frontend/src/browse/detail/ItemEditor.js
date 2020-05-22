@@ -138,12 +138,7 @@ const INITIAL_FORM_STATE = {
     quantity: 0
 };
 
-export function ItemEditorModal(props) {
-    const show = props.show;
-    const setShow = props.setShow;
-    const container = props.container;
-    const existingID = props.existingID;
-
+export function ItemEditorModal({show, setShow, container, handleClose = null, existingID = null, defaultItem = null}) {
     const [formData, setFormData] = useState(INITIAL_FORM_STATE);
     const [errorMsg, setErrorMsg] = useState(null);
 
@@ -163,11 +158,11 @@ export function ItemEditorModal(props) {
         }));
     };
 
-    const handleClose = () => {
+    const doClose = () => {
         setShow(false);
         setFormData(INITIAL_FORM_STATE);
-        if (props.handleClose) {
-            props.handleClose();
+        if (handleClose) {
+            handleClose();
         }
     };
 
@@ -179,7 +174,7 @@ export function ItemEditorModal(props) {
                 return axios.put(`/api/items/${existingID}`, formData)
             })
             .then(res => {
-                handleClose();
+                doClose();
             })
             .catch(err => {
                 console.error(err);
@@ -195,7 +190,7 @@ export function ItemEditorModal(props) {
                 return axios.post(`/api/items/`, formData)
             })
             .then(res => {
-                handleClose();
+                doClose();
             })
             .catch(err => {
                 console.error(err);
@@ -203,16 +198,16 @@ export function ItemEditorModal(props) {
             });
     };
 
-    return <Modal show={show} onHide={handleClose}>
+    return <Modal show={show} onHide={doClose}>
         <Modal.Header closeButton>
             <Modal.Title>Create new item</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <ItemEditorForm onChange={onChange} defaultItem={{container}}/>
+            <ItemEditorForm onChange={onChange} defaultItem={{defaultItem}}/>
         </Modal.Body>
         <Modal.Footer>
             <p className="text-danger">{errorMsg}</p>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={doClose}>
                 Cancel
             </Button>
             {
