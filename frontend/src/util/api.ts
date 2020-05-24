@@ -1,7 +1,70 @@
 import Axios, {AxiosResponse} from "axios";
 import {RetrieveContainer} from "./data";
+import Cookies from "universal-cookie/es6";
 
 
+const REFRESH_TOKEN_COOKIE_KEY = "inventree-oauth-refresh-token";
+const ACCESS_TOKEN_COOKIE_KEY = "inventree-oauth-access-token";
+const ACCESS_TOKEN_EXPIRY_COOKIE_KEY = "inventree-oauth-access-token-expiry";
+
+export class Authentication {
+
+    constructor(
+        private cookies: Cookies,
+        private authEndpoint: string,
+        private accessEndpoint: string,
+        private id: string,
+        private secret: string) {
+
+    }
+
+    public getRefreshToken(): string {
+        const refreshToken = this.cookies.get(REFRESH_TOKEN_COOKIE_KEY);
+        if (refreshToken) {
+            return refreshToken
+        }
+        return "";
+    }
+
+    public setRefreshToken(token: string) {
+        this.cookies.set(REFRESH_TOKEN_COOKIE_KEY, token);
+    }
+
+    public authenticate() {
+        window.location.href = this.authEndpoint;
+    }
+
+    public getAccessToken(): Promise<string> {
+        const refresh = this.getRefreshToken();
+        if (!refresh) {
+            return Promise.reject("No refresh token was found");
+        }
+
+        const expiryString = this.cookies.get(ACCESS_TOKEN_EXPIRY_COOKIE_KEY);
+        if (expiryString && new Date().getTime() < parseInt(expiryString)) {
+            return Promise.resolve(this.cookies.get(ACCESS_TOKEN_COOKIE_KEY));
+        }
+
+        return Axios.post(
+            this.accessEndpoint,
+            {},
+            {
+                auth: {
+                    username: this.id,
+                    password: this.secret
+                }
+            }
+        ).then((response) => {
+            const token = response.data.access_token;
+            const expiresIn = parseInt(response.data.expires_in);
+            const expiryTime = new Date().getTime() + expiresIn;
+            this.cookies.set(ACCESS_TOKEN_COOKIE_KEY, token);
+            this.cookies.set(ACCESS_TOKEN_EXPIRY_COOKIE_KEY, expiryTime);
+            return token;
+        })
+    }
+
+}
 
 export class InventreeAPI {
     constructor(private root: string) {
