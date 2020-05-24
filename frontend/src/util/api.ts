@@ -4,14 +4,15 @@ import Cookies from "universal-cookie/es6";
 import {randomString} from "./funcs";
 
 
-const REFRESH_TOKEN_COOKIE_KEY = "inventree-oauth-refresh-token";
-const ACCESS_TOKEN_COOKIE_KEY = "inventree-oauth-access-token";
-const ACCESS_TOKEN_EXPIRY_COOKIE_KEY = "inventree-oauth-access-token-expiry";
+export const REFRESH_TOKEN_COOKIE_KEY = "inventree-oauth-refresh-token";
+export const ACCESS_TOKEN_COOKIE_KEY = "inventree-oauth-access-token";
+export const ACCESS_TOKEN_EXPIRY_COOKIE_KEY = "inventree-oauth-access-token-expiry";
 
 export class Authentication {
 
     constructor(
-        private cookies: Cookies,
+        private setCookie: (key: string, value: string) => void,
+        private cookies: any,
         private authEndpoint: string,
         private accessEndpoint: string,
         private id: string,
@@ -20,7 +21,7 @@ export class Authentication {
     }
 
     public getRefreshToken(): string {
-        const refreshToken = this.cookies.get(REFRESH_TOKEN_COOKIE_KEY);
+        const refreshToken = this.cookies[REFRESH_TOKEN_COOKIE_KEY];
         if (refreshToken) {
             return refreshToken
         }
@@ -28,7 +29,7 @@ export class Authentication {
     }
 
     public setRefreshToken(token: string) {
-        this.cookies.set(REFRESH_TOKEN_COOKIE_KEY, token);
+        this.setCookie(REFRESH_TOKEN_COOKIE_KEY, token);
     }
 
     public authenticate() {
@@ -44,9 +45,9 @@ export class Authentication {
             return Promise.reject("No refresh token was found");
         }
 
-        const expiryString = this.cookies.get(ACCESS_TOKEN_EXPIRY_COOKIE_KEY);
+        const expiryString = this.cookies[ACCESS_TOKEN_EXPIRY_COOKIE_KEY];
         if (expiryString && new Date().getTime() < parseInt(expiryString)) {
-            return Promise.resolve(this.cookies.get(ACCESS_TOKEN_COOKIE_KEY));
+            return Promise.resolve(this.cookies[ACCESS_TOKEN_COOKIE_KEY]);
         }
 
         return Axios.post(
@@ -62,8 +63,8 @@ export class Authentication {
             const token = response.data.access_token;
             const expiresIn = parseInt(response.data.expires_in);
             const expiryTime = new Date().getTime() + expiresIn;
-            this.cookies.set(ACCESS_TOKEN_COOKIE_KEY, token);
-            this.cookies.set(ACCESS_TOKEN_EXPIRY_COOKIE_KEY, expiryTime);
+            this.setCookie(ACCESS_TOKEN_COOKIE_KEY, token);
+            this.setCookie(ACCESS_TOKEN_EXPIRY_COOKIE_KEY, expiryTime.toString());
             return token;
         })
     }
