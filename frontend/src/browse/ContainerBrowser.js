@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import {Button, ButtonToolbar, Col, Container, Nav, NavItem, Row, Spinner} from "react-bootstrap";
 import {ContainerDetailLoader} from "./detail/ContainerDetail";
 import {useSelectedContainerID} from "./detail/util";
-import {ItemEditorModal} from "./detail/ItemEditor";
+import {ItemEditorModal, NewItemEditorModal} from "./detail/ItemEditor";
 
 
 const NODE_COLLAPSED = 0;
@@ -184,7 +184,7 @@ function ContainerBrowser(props) {
                 <ContainerDetailLoader containerID={selectedContainerID}/>
             </Col>
         </Row>
-        <ItemEditorModal show={showItemModal} setShow={setShowItemModal}/>
+        <NewItemEditorModal show={showItemModal} setShow={setShowItemModal}/>
     </Container>
 }
 

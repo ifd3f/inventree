@@ -55,35 +55,56 @@ function TagSearch(props) {
     />
 }
 
+function createFormChangeCallback(key, {getItem, setItem, onChange}) {
+    return (ev) => {
+        const to = ev.value;
+        console.log(getItem(), setItem)
+        setItem({...getItem(), [key]: to});
+        onChange(key, to);
+    }
+}
 
-function ItemEditorForm(props) {
-    const onChange = props.onChange;
-    const defaultItem = props.defaultItem;
+
+function ItemEditorForm({
+    onChange,
+    item,
+    setItem
+    }) {
 
     const onChangeContainer = (ev) => {
-        onChange(ev.name, ev.option ? ev.option.id : null);
+        const to = ev.option ? ev.option.id : null
+        setItem({...item, container: to});
+        onChange("container", to);
+    };
+    const getItem= () => item;
+
+    const context = {
+        getItem: () => item,
+        setItem: setItem,
+        onChange
     };
 
-    const onChangeForm = (ev) => {
-        onChange(ev.target.id, ev.target.value);
-    };
-
-    const onChangeTags = (ev) => {
-        onChange(ev.name, ev.option);
-    };
+    const onChangeName = createFormChangeCallback("name", context);
+    const onChangeSource = createFormChangeCallback("source", context);
+    const onChangeSourceURL = createFormChangeCallback("source_url", context);
+    const onChangeQuantity = createFormChangeCallback("quantity", context);
+    const onChangeDescription = createFormChangeCallback("description", context);
+    const onChangeAlertQuantity = createFormChangeCallback("alert_quantity", context);
+    const onChangeTags = createFormChangeCallback("tags", context);
+    const onChangeImage = createFormChangeCallback("image", context);
 
     return <Form>
         <Row>
             <Col>
                 <Form.Group controlId="name">
                     <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" onChange={onChangeForm} defaultValue={defaultItem.name}/>
+                    <Form.Control type="text" onChange={onChangeName} value={item.name}/>
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group>
                     <Form.Label>Parent</Form.Label>
-                    <ContainerSearch name="parent" onChange={onChangeContainer} defaultValue={defaultItem.container}/>
+                    <ContainerSearch name="parent" onChange={onChangeContainer} value={item.container}/>
                 </Form.Group>
             </Col>
         </Row>
@@ -91,15 +112,15 @@ function ItemEditorForm(props) {
             <Col>
                 <Form.Group controlId="quantity">
                     <Form.Label>Quantity</Form.Label>
-                    <Form.Control type="number" min="0" onChange={onChangeForm}
-                                  defaultValue={defaultItem.quantity || 0}/>
+                    <Form.Control type="number" min="0" onChange={onChangeQuantity}
+                                  value={item.quantity}/>
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="alert_quantity">
                     <Form.Label>Alert Quantity</Form.Label>
-                    <Form.Control type="number" min="0" onChange={onChangeForm}
-                                  defaultValue={defaultItem.alert_quantity || 0}/>
+                    <Form.Control type="number" min="0" onChange={onChangeAlertQuantity}
+                                  value={item.alert_quantity}/>
                 </Form.Group>
             </Col>
         </Row>
@@ -107,23 +128,23 @@ function ItemEditorForm(props) {
             <Col>
                 <Form.Group controlId="source">
                     <Form.Label>Source Name</Form.Label>
-                    <Form.Control type="text" min="0" onChange={onChangeForm} defaultValue={defaultItem.source}/>
+                    <Form.Control type="text" min="0" onChange={onChangeSource} value={item.source}/>
                 </Form.Group>
             </Col>
             <Col>
                 <Form.Group controlId="source_url">
                     <Form.Label>Source URL</Form.Label>
-                    <Form.Control type="url" min="0" onChange={onChangeForm} defaultValue={defaultItem.source_url}/>
+                    <Form.Control type="url" min="0" onChange={onChangeSourceURL} value={item.source_url}/>
                 </Form.Group>
             </Col>
         </Row>
         <Form.Group controlId="image">
             <Form.Label>Image</Form.Label>
-            <input type="file" className="form-control-file"/>
+            <input type="file" className="form-control-file" onChange={onChangeImage}/>
         </Form.Group>
         <Form.Group controlId="description">
             <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" onChange={onChangeForm} defaultValue={defaultItem.description}/>
+            <Form.Control as="textarea" onChange={onChangeDescription} defaultValue={item.description}/>
         </Form.Group>
         <Form.Group>
             <Form.Label>Tags</Form.Label>
@@ -132,46 +153,83 @@ function ItemEditorForm(props) {
     </Form>;
 }
 
-const INITIAL_FORM_STATE = {
+const DEFAULT_ITEM = {
     name: '',
+    description: '',
     parent: null,
-    quantity: 0
+    quantity: 0,
+    alert_quantity: -1,
+    source: '',
+    source_url: '',
+    tags: [],
+    image: null
 };
 
-export function ItemEditorModal({show, setShow, container, handleClose = null, existingID = null, defaultItem = null}) {
-    const [formData, setFormData] = useState(INITIAL_FORM_STATE);
+export function NewItemEditorModal({
+    show,
+    setShow: _setShow,
+    parentContainer,
+    handleClose = null
+    }) {
+
+    const [item, setItem] = useState(DEFAULT_ITEM);
+    const [existingID, setExistingID] = useState(null);
+
+    const setShow = (ns) => {
+        _setShow(ns);
+        if (ns) {
+            setItem(DEFAULT_ITEM);
+            console.log(DEFAULT_ITEM)
+        }
+    }
+
+    return <ItemEditorModal
+        show={show}
+        setShow={setShow}
+        parentContainer={parentContainer}
+        handleClose={handleClose}
+        existingID={null}
+        setExistingID={setExistingID}
+        item={item}
+        setItem={setItem}/>
+
+}
+
+export function ItemEditorModal({
+    show,
+    setShow,
+    parentContainer,
+    handleClose = null,
+    existingID,
+    setExistingID,
+    item,
+    setItem
+    }) {
+
     const [errorMsg, setErrorMsg] = useState(null);
 
     useEffect(() => {
-        if (formData.parent === null && container) {
-            setFormData(prev => ({
+        if (item.parent === null && parentContainer) {
+            setItem(prev => ({
                 ...prev,
-                parent: container.id
+                parent: parentContainer.id
             }));
         }
     });
 
-    const onChange = (name, value) => {
-        setFormData(prev => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
     const doClose = () => {
         setShow(false);
-        setFormData(INITIAL_FORM_STATE);
         if (handleClose) {
             handleClose();
         }
     };
 
     const handleSave = () => {
-        console.log('Sending request to create item', formData);
+        console.log('Sending request to create item', item);
         setupCSRFToken()
             .then(csrf => {
                 applyCSRFToken(csrf);
-                return axios.put(`/api/items/${existingID}`, formData)
+                return axios.put(`/api/items/${existingID}`, item)
             })
             .then(res => {
                 doClose();
@@ -183,11 +241,11 @@ export function ItemEditorModal({show, setShow, container, handleClose = null, e
     };
 
     const handleCreate = () => {
-        console.log('Sending request to save item', formData);
+        console.log('Sending request to save item', item);
         setupCSRFToken()
             .then(csrf => {
                 applyCSRFToken(csrf);
-                return axios.post(`/api/items/`, formData)
+                return axios.post(`/api/items/`, item)
             })
             .then(res => {
                 doClose();
@@ -203,7 +261,7 @@ export function ItemEditorModal({show, setShow, container, handleClose = null, e
             <Modal.Title>Create new item</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <ItemEditorForm onChange={onChange} defaultItem={{defaultItem}}/>
+            <ItemEditorForm item={{item}} setItem={{setItem}}/>
         </Modal.Body>
         <Modal.Footer>
             <p className="text-danger">{errorMsg}</p>

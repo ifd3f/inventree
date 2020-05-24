@@ -4,7 +4,7 @@ import axios from "axios";
 import {Contents} from "./container/Contents";
 import Button from "react-bootstrap/Button";
 import {ButtonToolbar, Col, Image, Row, Spinner} from "react-bootstrap";
-import {ItemEditorModal} from "./ItemEditor";
+import {ItemEditorModal, NewItemEditorModal} from "./ItemEditor";
 import {PencilIcon} from "react-open-iconic-svg";
 
 
@@ -87,8 +87,11 @@ export function ContainerDetail(props) {
                 <Contents container={container} contents={contents}/>
             </Col>
         </Row>
-        <ItemEditorModal container={container} show={showItemModal} setShow={setShowItemModal}
-                         handleClose={handleCloseModal}/>
+        <NewItemEditorModal
+            parentContainer={container}
+            show={showItemModal}
+            setShow={setShowItemModal}
+            handleClose={handleCloseModal}/>
     </>
 
 }
