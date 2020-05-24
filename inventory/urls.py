@@ -6,13 +6,13 @@ from inventory.views import ItemViewSet, ContainerViewSet, ItemTagViewSet, InfoV
    ContainerSearchViewSet, ItemTagSuggestViewSet
 
 router = routers.DefaultRouter()
-router.register(r'items/search', ItemSearchViewSet, basename='items-search')
-router.register(r'items', ItemViewSet, basename='item')
-router.register(r'containers/search', ContainerSearchViewSet, basename='containers-search')
-router.register(r'containers', ContainerViewSet, basename='container')
-router.register(r'item-tags/suggest', ItemTagSuggestViewSet, basename='item-tags-suggest')
-router.register(r'item-tags', ItemTagViewSet)
-router.register(r'users', UserViewSet, basename='users')
+router.register(r'v1/items/search', ItemSearchViewSet, basename='items-search')
+router.register(r'v1/items', ItemViewSet, basename='item')
+router.register(r'v1/containers/search', ContainerSearchViewSet, basename='containers-search')
+router.register(r'v1/containers', ContainerViewSet, basename='container')
+router.register(r'v1/item-tags/suggest', ItemTagSuggestViewSet, basename='item-tags-suggest')
+router.register(r'v1/item-tags', ItemTagViewSet)
+router.register(r'v1/users', UserViewSet, basename='users')
 
 
 urlpatterns = [
