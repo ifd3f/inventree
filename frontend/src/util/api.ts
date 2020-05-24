@@ -1,6 +1,7 @@
 import Axios, {AxiosResponse} from "axios";
 import {RetrieveContainer} from "./data";
 import Cookies from "universal-cookie/es6";
+import {randomString} from "./funcs";
 
 
 const REFRESH_TOKEN_COOKIE_KEY = "inventree-oauth-refresh-token";
@@ -31,7 +32,10 @@ export class Authentication {
     }
 
     public authenticate() {
-        window.location.href = this.authEndpoint;
+        window.location.href = this.authEndpoint
+                + "/?state=" + randomString(32)
+                + "&client_id=" + this.id
+                + "&response_type=code";
     }
 
     public getAccessToken(): Promise<string> {
