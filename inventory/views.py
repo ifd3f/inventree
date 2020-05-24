@@ -75,34 +75,6 @@ class ContainerViewSet(ModelViewSet):
 
         return query
 
-    @action(methods=['get'], detail=True)
-    def parents(self, request, pk):
-        container = Container.objects.get(pk=pk)
-        node = container
-        path = []
-        while node is not None:
-            path.append(node)
-            node = node.parent
-        serializer = ContainerSerializer(path, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    @action(methods=['get'], detail=True)
-    def items(self, request, pk):
-        items = Item.objects.filter(parent__exact=pk)
-        serializer = ItemSerializer(items, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    @action(methods=['get'], detail=True)
-    def children(self, request: Request, pk):
-        containers = Container.objects.filter(parent__exact=pk)
-        depth = request.query_params.get("depth", 0)
-        serializer = ContainerSerializer(
-            containers,
-            many=True,
-            context={'request': request, 'depth': depth}
-        )
-        return Response(serializer.data)
-
 
 class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
