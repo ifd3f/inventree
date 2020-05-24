@@ -3,6 +3,7 @@ from django.db.models import F, Sum
 from rest_framework.decorators import action
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -55,6 +56,13 @@ class ContainerViewSet(ModelViewSet):
     serializer_class = ContainerSerializer
     parser_classes = [JSONParser]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({
+            "depth": int(self.request.query_params.get("depth", 0))
+        })
+        return context
+
     def get_queryset(self):
         query = Container.objects.all()
 
@@ -85,9 +93,14 @@ class ContainerViewSet(ModelViewSet):
         return Response(serializer.data)
 
     @action(methods=['get'], detail=True)
-    def children(self, request, pk):
+    def children(self, request: Request, pk):
         containers = Container.objects.filter(parent__exact=pk)
-        serializer = ContainerSerializer(containers, many=True, context={'request': request})
+        depth = request.query_params.get("depth", 0)
+        serializer = ContainerSerializer(
+            containers,
+            many=True,
+            context={'request': request, 'depth': depth}
+        )
         return Response(serializer.data)
 
 

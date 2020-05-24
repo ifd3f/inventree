@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from jsonfield import JSONField
 
-CONTAINER_TYPE_DEFAULT = 0
+CONTAINER_TYPE_BASIC = 0
 """
 Specifies a container that has no defined structure. The contents are rendered as a table.
 
@@ -49,7 +49,7 @@ child location_metadata schema:
 """
 
 CONTAINER_TYPE_CHOICES = [
-    (CONTAINER_TYPE_DEFAULT, 'default'),
+    (CONTAINER_TYPE_BASIC, 'basic'),
     (CONTAINER_TYPE_GRID, 'grid'),
     (CONTAINER_TYPE_FREEFORM, 'freeform')
 ]
@@ -87,7 +87,7 @@ class Node(models.Model):
 
 
 class Container(Node):
-    container_type = models.IntegerField(choices=CONTAINER_TYPE_CHOICES, default=CONTAINER_TYPE_DEFAULT)
+    container_type = models.IntegerField(choices=CONTAINER_TYPE_CHOICES, default=CONTAINER_TYPE_BASIC)
     """
     A node that contains other nodes.
     """

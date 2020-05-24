@@ -23,10 +23,57 @@ class ContainerSerializer(ModelSerializer):
     metadata = JSONFieldSerializerField()
     location_metadata = JSONFieldSerializerField(default={})
 
+    parents = serializers.SerializerMethodField('get_parents')
+    items = serializers.SerializerMethodField('get_items')
+    sub_containers = serializers.SerializerMethodField('get_sub_containers')
+
+    @staticmethod
+    def get_parents(container: Container):
+        parent = container.parent
+        if parent is None:
+            return []
+
+        path = []
+        node = parent
+        while node is not None:
+            path.append(node.id)
+            node = node.parent
+        return path
+
+    @staticmethod
+    def get_items(container: Container):
+        items = container.item_set.all()
+        serializer = ItemSerializer(items, many=True)
+        return serializer.data
+
+    def get_sub_containers(self, container: Container):
+        subs = container.container_set.all()
+        depth = self.context.get("depth", 0)
+        if depth <= 0:
+            return [s.id for s in subs]
+        else:
+            serializer = ContainerSerializer(
+                subs,
+                many=True,
+                context={**self.context, 'depth': depth - 1}
+            )
+            return serializer.data
+
     class Meta:
         model = Container
-        fields = ['id', 'name', 'image', 'description', 'container_type', 'parent', 'location_metadata', 'metadata',
-                  'qr_uuid']
+        fields = [
+            'id',
+            'name',
+            'image',
+            'description',
+            'items',
+            'container_type',
+            'parents',
+            'sub_containers',
+            'location_metadata',
+            'metadata',
+            'qr_uuid'
+        ]
 
 
 class ItemTagSerializer(ModelSerializer):
@@ -44,11 +91,37 @@ class SimplifiedItemTagSerializer(ModelSerializer):
 class ItemSerializer(ModelSerializer):
     location_metadata = JSONFieldSerializerField(default={})
     tags = serializers.SlugRelatedField(many=True, slug_field='name', queryset=ItemTag.objects.all(), default=[])
+    parents = serializers.SerializerMethodField('get_parents')
+
+    @staticmethod
+    def get_parents(item: Item):
+        parent = item.parent
+        if parent is None:
+            return []
+
+        path = []
+        node = parent
+        while node is not None:
+            path.append(node.id)
+            node = node.parent
+        return path
 
     class Meta:
         model = Item
-        fields = ['id', 'name', 'image', 'description', 'quantity', 'alert_quantity', 'source', 'source_url', 'parent',
-                  'tags', 'location_metadata', 'qr_uuid']
+        fields = [
+            'id',
+            'name',
+            'image',
+            'description',
+            'quantity',
+            'alert_quantity',
+            'source',
+            'source_url',
+            'parents',
+            'tags',
+            'location_metadata',
+            'qr_uuid'
+        ]
 
 
 class LoginFormSerializer(Serializer):
