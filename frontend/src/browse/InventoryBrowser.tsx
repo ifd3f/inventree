@@ -10,7 +10,7 @@ export interface SelectedContainerData {
 
 export const SelectedContainerContext = createContext<SelectedContainerData>({selected: null});
 
-export const Browser: FunctionComponent = () => {
+export const InventoryBrowser: FunctionComponent = () => {
 
     return <SelectedContainerContext.Provider value={{selected: null}}>
         <Navigator/>

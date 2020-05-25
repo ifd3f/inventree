@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import axios from "axios";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
 ReactDOM.render(<App />, document.getElementById('root'));
 serviceWorker.unregister();

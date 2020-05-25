@@ -1,19 +1,26 @@
 import React from 'react';
 import './App.css';
-import {BrowserRouter as Router, Switch} from "react-router-dom";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
 import {CookiesProvider} from "react-cookie";
-import {Container} from "@material-ui/core";
+import {MainToolbar} from "./toolbar/MainToolbar";
+import {InventoryBrowser} from "./browse/InventoryBrowser";
 
 
 function App() {
-    return <Router>
+    return <BrowserRouter>
         <CookiesProvider>
+            <MainToolbar/>
             <Switch>
-                <Container maxWidth={"xl"}>
-                </Container>
+                <Route path="/about">ffff</Route>
+                <Route path="/browse">
+                    <InventoryBrowser/>
+                </Route>
+                <Route exact path="/">
+
+                </Route>
             </Switch>
         </CookiesProvider>
-    </Router>;
+    </BrowserRouter>;
 }
 
 export default App;

@@ -1,5 +1,5 @@
 import {FunctionComponent, useContext} from "react";
-import {SelectedContainerContext} from "./Browser";
+import {SelectedContainerContext} from "./InventoryBrowser";
 
 
 export interface NavigatorProps {

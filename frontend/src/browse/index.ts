@@ -1,3 +1,3 @@
-import {Browser} from './Browser';
+import {InventoryBrowser} from './InventoryBrowser';
 
-export default Browser;
+export default InventoryBrowser;

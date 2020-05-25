@@ -5,14 +5,17 @@
   "dependencies": {
     "@material-ui/core": "^4.10.0",
     "axios": "^0.19.0",
+    "bootstrap": "^4.5.0",
     "django-react-csrftoken": "^1.0.4",
     "react": "^16.12.0",
     "react-cookie": "^4.0.3",
     "react-dom": "^16.12.0",
     "react-icons": "^3.10.0",
     "react-open-iconic-svg": "^3.0.1",
+    "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
+    "reactstrap": "^8.4.1",
     "typescript": "^3.9.3",
     "universal-cookie": "^4.0.3"
   },
