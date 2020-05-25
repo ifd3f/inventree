@@ -1,1 +1,336 @@
-[{"model": "inventory.container", "pk": 1, "fields": {"name": "Room", "description": "My room", "image": "", "parent": null, "location_metadata": {}, "qr_uuid": "d0820577-9bae-11ea-94fb-e86a64995d46", "container_type": 0, "metadata": {}}}, {"model": "inventory.container", "pk": 2, "fields": {"name": "Gray Shelf", "description": "It's the big gray shelf boi", "image": "", "parent": 1, "location_metadata": {}, "qr_uuid": "ddfccf94-9bae-11ea-94fb-e86a64995d46", "container_type": 1, "metadata": {}}}, {"model": "inventory.container", "pk": 3, "fields": {"name": "Resistor Box", "description": "Lotsa resistas", "image": "", "parent": null, "location_metadata": {}, "qr_uuid": "e8f31cbe-9bae-11ea-94fb-e86a64995d46", "container_type": 1, "metadata": {}}}, {"model": "inventory.container", "pk": 5, "fields": {"name": "Bookshelf", "description": "", "image": "", "parent": 1, "location_metadata": {}, "qr_uuid": "023b5182-9baf-11ea-94fb-e86a64995d46", "container_type": 0, "metadata": {}}}, {"model": "inventory.item", "pk": 1, "fields": {"description": "", "image": "", "parent": 5, "location_metadata": {}, "qr_uuid": "16cc5c3f-9baf-11ea-94fb-e86a64995d46", "name": "Code Complete", "quantity": 1, "alert_quantity": 0, "source": "", "source_url": null, "tags": []}}, {"model": "inventory.item", "pk": 2, "fields": {"description": "nice", "image": "", "parent": 3, "location_metadata": {}, "qr_uuid": "20ddd5ce-9baf-11ea-94fb-e86a64995d46", "name": "69 Ohm Resistor", "quantity": 2, "alert_quantity": 0, "source": "", "source_url": null, "tags": []}}, {"model": "inventory.item", "pk": 3, "fields": {"description": "putting the \"high\" in \"high impedance\"", "image": "", "parent": 3, "location_metadata": {}, "qr_uuid": "2c6f8a68-9baf-11ea-94fb-e86a64995d46", "name": "420 Ohm Resistor", "quantity": 32, "alert_quantity": 0, "source": "", "source_url": null, "tags": []}}, {"model": "inventory.item", "pk": 4, "fields": {"description": "", "image": "", "parent": 2, "location_metadata": {}, "qr_uuid": "33dd0fc8-9baf-11ea-94fb-e86a64995d46", "name": "Tank Robot", "quantity": 1, "alert_quantity": 2, "source": "", "source_url": null, "tags": []}}]
+[
+  {
+    "model": "inventory.container",
+    "pk": 2,
+    "fields": {
+      "name": "closet",
+      "description": "",
+      "image": "",
+      "parent": 101,
+      "location_metadata": {},
+      "qr_uuid": "4708b392-3822-11ea-bec3-0c96e69f2b7e",
+      "container_type": 0,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 3,
+    "fields": {
+      "name": "desk",
+      "description": "",
+      "image": "",
+      "parent": 101,
+      "location_metadata": {},
+      "qr_uuid": "4708b392-3822-11ea-bec3-0c96e69f2b7e",
+      "container_type": 0,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 4,
+    "fields": {
+      "name": "plastic drawer",
+      "description": "it's white",
+      "image": "container/What-is-inductor_HLppimx.jpg",
+      "parent": 2,
+      "location_metadata": {},
+      "qr_uuid": "4708b392-3822-11ea-bec3-0c96e69f2b7e",
+      "container_type": 0,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 5,
+    "fields": {
+      "name": "wardrobe",
+      "description": "",
+      "image": "",
+      "parent": 2,
+      "location_metadata": {},
+      "qr_uuid": "4708b392-3822-11ea-bec3-0c96e69f2b7e",
+      "container_type": 0,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 6,
+    "fields": {
+      "name": "safe",
+      "description": "",
+      "image": "",
+      "parent": 2,
+      "location_metadata": {},
+      "qr_uuid": "4708b392-3822-11ea-bec3-0c96e69f2b7e",
+      "container_type": 0,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 101,
+    "fields": {
+      "name": "Room",
+      "description": "My room",
+      "image": "",
+      "parent": null,
+      "location_metadata": {},
+      "qr_uuid": "d0820577-9bae-11ea-94fb-e86a64995d46",
+      "container_type": 0,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 102,
+    "fields": {
+      "name": "Gray Shelf",
+      "description": "It's the big gray shelf boi",
+      "image": "",
+      "parent": 101,
+      "location_metadata": {},
+      "qr_uuid": "ddfccf94-9bae-11ea-94fb-e86a64995d46",
+      "container_type": 1,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 103,
+    "fields": {
+      "name": "Resistor Box",
+      "description": "Lotsa resistas",
+      "image": "",
+      "parent": 102,
+      "location_metadata": {},
+      "qr_uuid": "e8f31cbe-9bae-11ea-94fb-e86a64995d46",
+      "container_type": 1,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.container",
+    "pk": 105,
+    "fields": {
+      "name": "Bookshelf",
+      "description": "",
+      "image": "",
+      "parent": 101,
+      "location_metadata": {},
+      "qr_uuid": "023b5182-9baf-11ea-94fb-e86a64995d46",
+      "container_type": 0,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "inventory.itemtag",
+    "pk": "aal",
+    "fields": {}
+  },
+  {
+    "model": "inventory.itemtag",
+    "pk": "asnfd",
+    "fields": {}
+  },
+  {
+    "model": "inventory.itemtag",
+    "pk": "booooooood",
+    "fields": {}
+  },
+  {
+    "model": "inventory.itemtag",
+    "pk": "boop",
+    "fields": {}
+  },
+  {
+    "model": "inventory.itemtag",
+    "pk": "device",
+    "fields": {}
+  },
+  {
+    "model": "inventory.itemtag",
+    "pk": "food",
+    "fields": {}
+  },
+  {
+    "model": "inventory.itemtag",
+    "pk": "meme",
+    "fields": {}
+  },
+  {
+    "model": "inventory.itemtag",
+    "pk": "mep",
+    "fields": {}
+  },
+  {
+    "model": "inventory.itemtag",
+    "pk": "mors",
+    "fields": {}
+  },
+  {
+    "model": "inventory.item",
+    "pk": 1,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 4,
+      "location_metadata": {},
+      "qr_uuid": "470a1324-3822-11ea-bdea-0c96e69f2b7e",
+      "name": "oatmel",
+      "quantity": 8,
+      "alert_quantity": -1,
+      "source": "",
+      "source_url": null,
+      "tags": [
+        "meme"
+      ]
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 2,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 3,
+      "location_metadata": {},
+      "qr_uuid": "470a1324-3822-11ea-bdea-0c96e69f2b7e",
+      "name": "lamp",
+      "quantity": 1,
+      "alert_quantity": 0,
+      "source": "",
+      "source_url": null,
+      "tags": [
+        "device"
+      ]
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 3,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 3,
+      "location_metadata": {},
+      "qr_uuid": "470a1324-3822-11ea-bdea-0c96e69f2b7e",
+      "name": "keyboard",
+      "quantity": 1,
+      "alert_quantity": 0,
+      "source": "",
+      "source_url": null,
+      "tags": [
+        "device"
+      ]
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 4,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 3,
+      "location_metadata": {},
+      "qr_uuid": "470a1324-3822-11ea-bdea-0c96e69f2b7e",
+      "name": "mouse",
+      "quantity": 1,
+      "alert_quantity": 0,
+      "source": "",
+      "source_url": null,
+      "tags": [
+        "device"
+      ]
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 18,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 2,
+      "location_metadata": {},
+      "qr_uuid": "470a1324-3822-11ea-bdea-0c96e69f2b7e",
+      "name": "myself",
+      "quantity": 1,
+      "alert_quantity": 0,
+      "source": "",
+      "source_url": null,
+      "tags": [
+        "meme"
+      ]
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 101,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 105,
+      "location_metadata": {},
+      "qr_uuid": "16cc5c3f-9baf-11ea-94fb-e86a64995d46",
+      "name": "Code Complete",
+      "quantity": 1,
+      "alert_quantity": 0,
+      "source": "",
+      "source_url": null,
+      "tags": []
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 102,
+    "fields": {
+      "description": "nice",
+      "image": "",
+      "parent": 103,
+      "location_metadata": {},
+      "qr_uuid": "20ddd5ce-9baf-11ea-94fb-e86a64995d46",
+      "name": "69 Ohm Resistor",
+      "quantity": 2,
+      "alert_quantity": 0,
+      "source": "",
+      "source_url": null,
+      "tags": []
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 103,
+    "fields": {
+      "description": "putting the \"high\" in \"high impedance\"",
+      "image": "",
+      "parent": 103,
+      "location_metadata": {},
+      "qr_uuid": "2c6f8a68-9baf-11ea-94fb-e86a64995d46",
+      "name": "420 Ohm Resistor",
+      "quantity": 32,
+      "alert_quantity": 0,
+      "source": "",
+      "source_url": null,
+      "tags": []
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 104,
+    "fields": {
+      "description": "",
+      "image": "",
+      "parent": 102,
+      "location_metadata": {},
+      "qr_uuid": "33dd0fc8-9baf-11ea-94fb-e86a64995d46",
+      "name": "Tank Robot",
+      "quantity": 1,
+      "alert_quantity": 2,
+      "source": "",
+      "source_url": null,
+      "tags": []
+    }
+  }
+]
