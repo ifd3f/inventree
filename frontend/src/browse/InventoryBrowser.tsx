@@ -9,6 +9,10 @@ export class LoadingDataState {
         public readonly requestNumber: number,
         public readonly requestSent: boolean) {
     }
+
+    afterSend() {
+        return new LoadingDataState(this.containerId, this.requestNumber, true);
+    }
 }
 
 export class SelectedDataState {
@@ -44,6 +48,7 @@ export const InventoryBrowser: FunctionComponent = () => {
 
     if (state instanceof LoadingDataState && !state.requestSent) {
         const thisState = state;
+        setState(state.afterSend())
         api.getContainer(state.containerId).then((container) => {
             console.log(state, container)
             const stateWhenLoaded = getState();
