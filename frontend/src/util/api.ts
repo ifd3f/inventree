@@ -80,6 +80,12 @@ export class InventreeAPI {
         return this.root + resource
     }
 
+    getContainer(id: number): Promise<RetrieveContainer> {
+        return Axios.get(
+            this.root + 'v1/containers/' + id
+        ).then((res: AxiosResponse<RetrieveContainer>) => res.data)
+    }
+
     getRootContainers(): Promise<Array<RetrieveContainer>> {
         return Axios.get(
             this.root + "v1/containers",
@@ -88,8 +94,6 @@ export class InventreeAPI {
                     parent: 0
                 }
             }
-        ).then((res: AxiosResponse<Array<RetrieveContainer>>) => {
-            return res.data
-        });
+        ).then((res: AxiosResponse<Array<RetrieveContainer>>) => res.data);
     }
 }

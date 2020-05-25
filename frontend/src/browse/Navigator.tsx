@@ -1,5 +1,5 @@
-import {FunctionComponent, useContext} from "react";
-import {SelectedContainerContext} from "./InventoryBrowser";
+import {FunctionComponent} from "react";
+import {useContainerSelection} from "./InventoryBrowser";
 
 
 export interface NavigatorProps {
@@ -7,6 +7,6 @@ export interface NavigatorProps {
 }
 
 export const Navigator: FunctionComponent<NavigatorProps> = () => {
-    const {selected} = useContext(SelectedContainerContext);
+    const {state} = useContainerSelection();
     return null;
 }
