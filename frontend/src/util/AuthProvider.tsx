@@ -13,7 +13,6 @@ const AuthProviderContext =
     });
 
 interface AuthProviderProps {
-    cookies: Cookies
     authEndpoint: string
     accessEndpoint: string
     clientId: string
