@@ -23,7 +23,7 @@ export const MainToolbar = () => {
 
 
     return <Navbar color="dark" dark expand="md">
-        <NavbarBrand tag={Link} to="/">reactstrap</NavbarBrand>
+        <NavbarBrand tag={Link} to="/">Inventree</NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar>

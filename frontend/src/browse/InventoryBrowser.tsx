@@ -1,16 +1,17 @@
 import React, {createContext, FunctionComponent, useContext, useState} from "react";
 import {RetrieveContainer, useInventreeAPI} from "../util";
 import {Navigator} from "./Navigator";
-import {ContainerDetail} from "./ContainerDetail";
+import {ContainerDetailWrapper} from "./ContainerDetailWrapper";
 
-class LoadingDataState {
+export class LoadingDataState {
     constructor(
         public readonly containerId: number,
-        public readonly requestNumber: number) {
+        public readonly requestNumber: number,
+        public readonly requestSent: boolean) {
     }
 }
 
-class SelectedDataState {
+export class SelectedDataState {
     constructor(public readonly container: RetrieveContainer) {
     }
 }
@@ -34,20 +35,27 @@ export const InventoryBrowser: FunctionComponent = () => {
     const api = useInventreeAPI();
 
     const selectContainer = (id: number) => {
-        const nextState = new LoadingDataState(id, nextRequestNumber);
-        api.getContainer(id).then((container) => {
-            if (state === nextState) {
-                setState(new SelectedDataState(container));
-            }
-        });
-
+        const nextState = new LoadingDataState(id, nextRequestNumber, false);
         setNextRequestNumber(nextRequestNumber + 1);
         setState(nextState);
     }
 
+    const getState = () => state;
+
+    if (state instanceof LoadingDataState && !state.requestSent) {
+        const thisState = state;
+        api.getContainer(state.containerId).then((container) => {
+            console.log(state, container)
+            const stateWhenLoaded = getState();
+            if (stateWhenLoaded instanceof LoadingDataState && stateWhenLoaded.requestNumber == thisState.requestNumber) {
+                setState(new SelectedDataState(container));
+            }
+        });
+    }
+
     return <SelectedContainerContext.Provider value={{state, selectContainer}}>
         <Navigator/>
-        <ContainerDetail/>
+        <ContainerDetailWrapper/>
     </SelectedContainerContext.Provider>;
 };
 
