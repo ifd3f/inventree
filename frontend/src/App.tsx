@@ -4,7 +4,7 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import {CookiesProvider} from "react-cookie";
 import {MainToolbar} from "./toolbar/MainToolbar";
 import {InventoryBrowser} from "./browse/InventoryBrowser";
-import {AuthProvider, InventreeAPIProvider} from "./util";
+import {AcceptRefreshToken, AuthProvider, InventreeAPIProvider} from "./util";
 
 
 function App() {
@@ -19,6 +19,7 @@ function App() {
                     root="http://localhost:8000/api/">
                     <MainToolbar/>
                     <Switch>
+                        <Route path="/accept-token" component={AcceptRefreshToken}/>
                         <Route path="/about">ffff</Route>
                         <Route path="/browse">
                             <InventoryBrowser/>

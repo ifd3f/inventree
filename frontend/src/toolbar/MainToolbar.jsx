@@ -11,8 +11,9 @@ import {
     DropdownMenu,
     NavbarBrand,
     NavbarToggler,
-    DropdownItem, NavbarText, NavLink
+    DropdownItem, NavbarText, NavLink, Button
 } from "reactstrap";
+import {useAuth} from "../util";
 
 
 
@@ -20,7 +21,9 @@ export const MainToolbar = () => {
       const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
+  const auth = useAuth()
 
+    auth.getAccessToken().then(console.log)
 
     return <Navbar color="dark" dark expand="md">
         <NavbarBrand tag={Link} to="/">Inventree</NavbarBrand>
@@ -51,7 +54,9 @@ export const MainToolbar = () => {
               </DropdownMenu>
             </UncontrolledDropdown>
           </Nav>
-          <NavbarText>Simple Text</NavbarText>
+          <NavbarText>
+              <Button onClick={() => auth.authenticate()}>authen</Button>
+              </NavbarText>
         </Collapse>
       </Navbar>
 }

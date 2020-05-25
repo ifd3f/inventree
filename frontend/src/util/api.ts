@@ -32,11 +32,12 @@ export class Authentication {
         this.setCookie(REFRESH_TOKEN_COOKIE_KEY, token);
     }
 
-    public authenticate() {
+    public authenticate(): never {
         window.location.href = this.authEndpoint
-                + "/?state=" + randomString(32)
+                + "?state=" + window.location.href
                 + "&client_id=" + this.id
                 + "&response_type=code";
+        throw new Error("The browser did not get redirected to auth endpoint!");
     }
 
     public getAccessToken(): Promise<string> {
