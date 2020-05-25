@@ -51,4 +51,4 @@ export const AuthProvider: FunctionComponent<AuthProviderProps> = (
         </AuthProviderContext.Provider>
 };
 
-export const useAuth = () => useContext(AuthProviderContext)
+export const useAuth = () => useContext(AuthProviderContext).auth!

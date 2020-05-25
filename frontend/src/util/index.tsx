@@ -1,3 +1,6 @@
 export * from './data';
-export {InventreeAPI} from "./api";
+export * from "./api";
+export * from './InventreeAPIProvider'
+export * from './funcs'
+export * from './AuthProvider'
 

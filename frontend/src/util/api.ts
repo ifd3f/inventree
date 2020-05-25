@@ -72,7 +72,7 @@ export class Authentication {
 }
 
 export class InventreeAPI {
-    constructor(private root: string) {
+    constructor(private auth: Authentication, private root: string) {
 
     }
 
