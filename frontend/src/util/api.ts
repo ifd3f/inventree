@@ -1,69 +1,65 @@
-import Axios, {AxiosRequestConfig, AxiosResponse} from "axios";
+import Axios, {AxiosResponse} from "axios";
 import qs from 'qs';
 import {RetrieveContainer} from "./data";
-import Cookies from "universal-cookie/es6";
-import {randomString} from "./funcs";
 
 
 export const REFRESH_TOKEN_COOKIE_KEY = "inventree-oauth-refresh-token";
 export const ACCESS_TOKEN_COOKIE_KEY = "inventree-oauth-access-token";
 export const ACCESS_TOKEN_EXPIRY_COOKIE_KEY = "inventree-oauth-access-token-expiry";
 
+interface AccessTokenResponse {
+    access_token: string
+    expires_in: number
+    token_type: string
+    scope: string
+    refresh_token: string
+}
+
 export class Authentication {
+    private getCookie: OmitThisParameter<(key: string) => string>;
+    private setCookie: OmitThisParameter<(key: string, value: string) => void>;
 
     constructor(
-        private setCookie: (key: string, value: string) => void,
-        private cookies: any,
+        setCookie: (key: string, value: string) => void,
+        getCookie: (key: string) => string,
         private authEndpoint: string,
         private accessEndpoint: string,
         private id: string,
         private secret: string) {
 
+        this.getCookie = getCookie.bind(null);
+        this.setCookie = setCookie.bind(null);
     }
 
-    public getRefreshToken(): string {
-        const refreshToken = this.cookies[REFRESH_TOKEN_COOKIE_KEY];
-        if (refreshToken) {
-            return refreshToken
-        }
-        return "";
+    private onAccessTokenReceived(response: AccessTokenResponse) {
+        this.setCookie(REFRESH_TOKEN_COOKIE_KEY, response.refresh_token);
+        this.setCookie(ACCESS_TOKEN_COOKIE_KEY, response.access_token);
+        const expiryTime = Math.max(0, new Date().getTime() + response.expires_in - 10);
+        this.setCookie(ACCESS_TOKEN_EXPIRY_COOKIE_KEY, String(expiryTime));
+        return response.access_token;
     }
 
-    public setRefreshToken(token: string) {
-        this.setCookie(REFRESH_TOKEN_COOKIE_KEY, token);
+    public getRefreshToken(): string | undefined {
+        return this.getCookie(REFRESH_TOKEN_COOKIE_KEY);
     }
 
-    public authenticate(): never {
+    public redirectAuthenticate(): never {
         window.location.href = this.authEndpoint
                 + "?state=" + window.location.href
                 + "&client_id=" + this.id
+                + "&redirect_uri=" + encodeURI("http://localhost:3000/accept-token")
                 + "&response_type=code";
-        throw new Error("The browser did not get redirected to auth endpoint!");
+        throw new Error("The browser is being redirected");
     }
 
-    public async getAccessToken(): Promise<string> {
-        const refresh = this.getRefreshToken();
-        if (!refresh) {
-            return Promise.reject("No refresh token was found");
-        }
-
-        const expiryString = this.cookies[ACCESS_TOKEN_EXPIRY_COOKIE_KEY];
-        if (expiryString && new Date().getTime() < parseInt(expiryString)) {
-            return Promise.resolve(this.cookies[ACCESS_TOKEN_COOKIE_KEY]);
-        }
-
-        const response = await Axios({
+    public authorize(code: string) {
+        return Axios({
             method: 'post',
             url: this.accessEndpoint,
             data: qs.stringify({
-                client_id: this.id,
-                client_secret: this.secret,
+                code: code,
                 redirect_uri: 'http://localhost:3000/accept-token',
-                refresh_token: this.getRefreshToken(),
-                grant_type: 'client_credentials',
-                username: 'astrid',
-                password: 'robotics',
-                response_type: 'token'
+                grant_type: 'authorization_code',
             }),
             auth: {
                 username: this.id,
@@ -72,13 +68,46 @@ export class Authentication {
             headers: {
                 'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
             }
+        }).then(response => {
+            this.onAccessTokenReceived(response.data);
         })
-        const token = response.data.access_token;
-        const expiresIn = parseInt(response.data.expires_in);
-        const expiryTime = new Date().getTime() + expiresIn;
-        this.setCookie(ACCESS_TOKEN_COOKIE_KEY, token);
-        this.setCookie(ACCESS_TOKEN_EXPIRY_COOKIE_KEY, expiryTime.toString());
-        return token;
+    }
+
+    private async refreshAccessToken(): Promise<string> {
+        const refresh = this.getRefreshToken();
+        if (refresh == null) {
+            throw new Error("No refresh token was found");
+        }
+        console.log('refresh with', refresh)
+        const response = await Axios({
+            method: 'post',
+            url: this.accessEndpoint,
+            data: qs.stringify({
+                client_id: this.id,
+                client_secret: this.secret,
+                refresh_token: refresh,
+                grant_type: 'refresh_token',
+                redirect_uri: 'http://localhost:3000/accept-token'
+            }),
+            auth: {
+                username: this.id,
+                password: this.secret
+            },
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        return this.onAccessTokenReceived(response.data);
+    }
+
+    public async getAccessToken(): Promise<string> {
+        const expiryString = this.getCookie(ACCESS_TOKEN_EXPIRY_COOKIE_KEY);
+        if (expiryString && new Date().getTime() < parseInt(expiryString)) {
+            console.log("token")
+            return this.getCookie(ACCESS_TOKEN_COOKIE_KEY);
+        }
+        console.warn("Access token has expired, getting a new one");
+        return this.refreshAccessToken();
     }
 
 }
