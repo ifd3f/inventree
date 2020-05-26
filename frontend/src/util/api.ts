@@ -1,4 +1,5 @@
-import Axios, {AxiosResponse} from "axios";
+import Axios, {AxiosRequestConfig, AxiosResponse} from "axios";
+import qs from 'qs';
 import {RetrieveContainer} from "./data";
 import Cookies from "universal-cookie/es6";
 import {randomString} from "./funcs";
@@ -40,7 +41,7 @@ export class Authentication {
         throw new Error("The browser did not get redirected to auth endpoint!");
     }
 
-    public getAccessToken(): Promise<string> {
+    public async getAccessToken(): Promise<string> {
         const refresh = this.getRefreshToken();
         if (!refresh) {
             return Promise.reject("No refresh token was found");
@@ -51,23 +52,33 @@ export class Authentication {
             return Promise.resolve(this.cookies[ACCESS_TOKEN_COOKIE_KEY]);
         }
 
-        return Axios.post(
-            this.accessEndpoint,
-            {},
-            {
-                auth: {
-                    username: this.id,
-                    password: this.secret
-                }
+        const response = await Axios({
+            method: 'post',
+            url: this.accessEndpoint,
+            data: qs.stringify({
+                client_id: this.id,
+                client_secret: this.secret,
+                redirect_uri: 'http://localhost:3000/accept-token',
+                refresh_token: this.getRefreshToken(),
+                grant_type: 'client_credentials',
+                username: 'astrid',
+                password: 'robotics',
+                response_type: 'token'
+            }),
+            auth: {
+                username: this.id,
+                password: this.secret
+            },
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
             }
-        ).then((response) => {
-            const token = response.data.access_token;
-            const expiresIn = parseInt(response.data.expires_in);
-            const expiryTime = new Date().getTime() + expiresIn;
-            this.setCookie(ACCESS_TOKEN_COOKIE_KEY, token);
-            this.setCookie(ACCESS_TOKEN_EXPIRY_COOKIE_KEY, expiryTime.toString());
-            return token;
         })
+        const token = response.data.access_token;
+        const expiresIn = parseInt(response.data.expires_in);
+        const expiryTime = new Date().getTime() + expiresIn;
+        this.setCookie(ACCESS_TOKEN_COOKIE_KEY, token);
+        this.setCookie(ACCESS_TOKEN_EXPIRY_COOKIE_KEY, expiryTime.toString());
+        return token;
     }
 
 }
@@ -81,20 +92,32 @@ export class InventreeAPI {
         return this.root + resource
     }
 
-    getContainer(id: number): Promise<RetrieveContainer> {
-        return Axios.get(
-            this.root + 'v1/containers/' + id
-        ).then((res: AxiosResponse<RetrieveContainer>) => res.data)
+    private getHeaders(): Promise<any> {
+        return this.auth.getAccessToken().then(token => ({
+            Authorization: 'Bearer ' + token
+        }))
     }
 
-    getRootContainers(): Promise<Array<RetrieveContainer>> {
-        return Axios.get(
+    async getContainer(id: number): Promise<RetrieveContainer> {
+        const response: AxiosResponse<RetrieveContainer> = await Axios.get(
+            this.root + 'v1/containers/' + id,
+            {
+                headers: await this.getHeaders()
+            }
+        )
+        return response.data;
+    }
+
+    async getRootContainers(): Promise<Array<RetrieveContainer>> {
+        const response: AxiosResponse<Array<RetrieveContainer>> = await Axios.get(
             this.root + "v1/containers",
             {
                 params: {
                     parent: 0
-                }
+                },
+                headers: this.getHeaders()
             }
-        ).then((res: AxiosResponse<Array<RetrieveContainer>>) => res.data);
+        )
+        return response.data
     }
 }

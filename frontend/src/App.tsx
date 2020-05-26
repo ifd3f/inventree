@@ -11,8 +11,8 @@ function App() {
     return <BrowserRouter>
         <CookiesProvider>
             <AuthProvider
-                authEndpoint="http://localhost:8000/oauth2/authorize/"
-                accessEndpoint="http://localhost:8000/oauth2/token/"
+                authEndpoint="http://localhost:8000/o/authorize/"
+                accessEndpoint="http://localhost:8000/o/token/"
                 clientId="wdAjMnKhK3w2BeZlRC1BDekbN8rqJEXg9bCb7XRb"
                 secret="puAuEQIKJWnAl46d9rn9toojA6bXfSCLyOwgDOxIrz5ZIQ6G5A9TCFKWfSrPQtsCQE0cth12uiHzpzMIMyQpcsp3QlEpCyoGCEsfjFS8GSgcm7aV0aIG8pJwWXKB9rkO">
                 <InventreeAPIProvider
