@@ -22,7 +22,7 @@ you don't
 
 ## Authors
 
-* **Maxim Yu** - _Like, everything_ - [Plenglin](https://github.com/Plenglin)
+* **Astrid Yu** - _Like, everything_ - [Plenglin](https://github.com/Plenglin)
 
 ## License
 
